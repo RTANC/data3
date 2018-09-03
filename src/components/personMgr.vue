@@ -1,32 +1,43 @@
 <template>
-<v-card>
-  <v-card-text>
-    <v-container fluid>
-      <v-layout row wrap>
-        <v-flex xs3>
-          <v-select
-            :items="items"
-            v-model="year"
-            label="ปีการศึกษา"
-          ></v-select>
-        </v-flex>
-        <v-flex xs3>
-          <input type="file" @change="handleFile">
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-card-text>
-</v-card>
+<div>
+  <v-container fluid>
+  <v-layout row wrap>
+    <v-flex xs12>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        class="elevation-1"
+        :pagination.sync="pagination"
+      >
+        <template slot="items" slot-scope="props">
+          <td>{{ props.item.key }}</td>
+          <td class="text-xs-right">{{ props.item.key }}</td>
+          <td class="text-xs-right">{{ props.item.key }}</td>
+          <td class="text-xs-right">{{ props.item.key }}</td>
+          <td class="text-xs-right">{{ props.item.key }}</td>
+        </template>
+      </v-data-table>
+    </v-flex>
+  </v-layout>
+</v-container>
+  <v-btn fixed buttom right fab color="pink" dark>
+     <v-icon>add</v-icon>
+  </v-btn>
+</div>
 </template>
 
 <script>
 import XLSX from 'xlsx'
+import personHeaders from '../meta/personHeaders'
 export default {
   name: 'personMgr',
   data () {
     return {
-      items: [2559,2560,2561,2562,2563],
-      year: null
+      headers: personHeaders.headers,
+      pagination: {
+        sortBy: 'rank',
+        descending: true
+      }
     }
   },
   methods: {
