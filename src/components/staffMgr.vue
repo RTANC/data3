@@ -67,6 +67,7 @@ import XLSX from 'xlsx'
 import staffHeaders from '../meta/staffHeaders'
 import subDistricts from '../meta/subDistricts'
 import ranks from '../meta/ranks'
+import axios from 'axios'
 export default {
   name: 'personMgr',
   data () {
@@ -80,6 +81,7 @@ export default {
       },
       items: [],
       ranks: ranks.ranks,
+      zipcodes: [],
       staff: {
         CITIZEN_ID: null,
         PREFIX_NAME_ID: null,
@@ -139,7 +141,19 @@ export default {
     }, 
     add () {
       this.dialog = true
+    },
+    async getZipCodes () {
+      try {
+        const response = await axios.get('https://raw.githubusercontent.com/rathpanyowat/Thai-zip-code-latitude-and-longitude/master/data.json')
+        this.zipcodes = response.data
+        console.log(this.zipcodes)
+      } catch (error) {
+        console.log('Get zipcode error')
+      }
     }
+  },
+  mounted () {
+    this.getZipCodes()
   }
 }
 </script>
