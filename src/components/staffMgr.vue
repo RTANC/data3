@@ -64,23 +64,37 @@
 
 <script>
 import XLSX from 'xlsx'
-import staffHeaders from '../meta/staffHeaders'
-import subDistricts from '../meta/subDistricts'
-import ranks from '../meta/ranks'
+import subDistricts from '../json/refSubDistricts'
 import axios from 'axios'
 export default {
   name: 'personMgr',
   data () {
     return {
       dialog: false,
-      headers: staffHeaders.headers,
-      refSubDistricts: subDistricts.subDistricts,
+      headers: [{
+        text: 'รหัสประจำตัวประชาชน',
+        align: 'center'
+      }, {
+        text: 'ยศ',
+        value: 'rank',
+        align: 'center'
+      }, {
+        text: 'ชื่อ',
+        align: 'center'
+      }, {
+        text: 'นามสกุล',
+        align: 'center'
+      }, {
+        text: 'วุฒิ / แก้ไข / ลบ',
+        align: 'center',
+        sortable: false
+    }],
+      refSubDistricts: subDistricts,
       pagination: {
         sortBy: 'rank',
         descending: true
       },
       items: [],
-      ranks: ranks.ranks,
       zipcodes: [],
       staff: {
         CITIZEN_ID: null,
@@ -146,7 +160,6 @@ export default {
       try {
         const response = await axios.get('https://raw.githubusercontent.com/rathpanyowat/Thai-zip-code-latitude-and-longitude/master/data.json')
         this.zipcodes = response.data
-        console.log(this.zipcodes)
       } catch (error) {
         console.log('Get zipcode error')
       }
