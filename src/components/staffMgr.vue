@@ -64,7 +64,7 @@
 
 <script>
 import XLSX from 'xlsx'
-import subDistricts from '../json/refSubDistricts'
+import subDistricts from '../json/refSubDistrict'
 import axios from 'axios'
 export default {
   name: 'personMgr',
