@@ -65,10 +65,95 @@
                 label="บ้านเลขที่"
               ></v-text-field>
             </v-flex>
-            <v-flex xs1>
+            <v-flex xs2>
               <v-text-field
                 label="หมู่ที่"
               ></v-text-field>
+            </v-flex>
+            <v-flex xs4>
+              <v-text-field
+                label="ถนน"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs4>
+              <v-autocomplete v-model="staff.SUB_DISTRICT_ID" :items="refSubDistricts" label="ตำบล"></v-autocomplete>
+            </v-flex>
+            <v-flex xs4>
+              <v-text-field
+                label="หมายเลขโทรศัพท์"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              <v-autocomplete v-model="staff.NATION_ID" :items="nations" label="สัญชาติ"></v-autocomplete>
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
+            </v-flex>
+            <v-flex xs4>
+              
             </v-flex>
           </v-layout>
         </v-container>
@@ -92,6 +177,7 @@ import XLSX from 'xlsx'
 import subDistricts from '../json/refSubDistrict'
 import axios from 'axios'
 import ranks from '../json/refRank.json'
+import nations from '../json/refNation'
 export default {
   name: 'personMgr',
   data () {
@@ -131,6 +217,7 @@ export default {
       items: [],
       zipcodes: [],
       ranks: ranks,
+      nations: nations,
       staff: {
         CITIZEN_ID: null,
         PREFIX_NAME_ID: null,
