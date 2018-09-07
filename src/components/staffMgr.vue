@@ -45,6 +45,31 @@
             <v-flex xs6>
               <v-text-field label="นามสกุล" required></v-text-field>
             </v-flex>
+            <v-flex xs2>
+              <v-select
+                :items="[{value: '2', text: 'หญิง'},{value: '1', text: 'ชาย'}]"
+                v-model="staff.GENDER_ID"
+                label="เพศ"
+              ></v-select>
+            </v-flex>
+            <v-flex xs5>
+              <v-subheader>วัน/เดือน/ปี เกิด</v-subheader>
+              <v-date-picker
+                :first-day-of-week="0"
+                locale="th"
+                v-model="staff.BIRTHDAY"
+              ></v-date-picker>
+            </v-flex>
+            <v-flex xs3>
+              <v-text-field
+                label="บ้านเลขที่"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs1>
+              <v-text-field
+                label="หมู่ที่"
+              ></v-text-field>
+            </v-flex>
           </v-layout>
         </v-container>
       </v-card-text>
@@ -66,6 +91,7 @@
 import XLSX from 'xlsx'
 import subDistricts from '../json/refSubDistrict'
 import axios from 'axios'
+import ranks from '../json/refRank.json'
 export default {
   name: 'personMgr',
   data () {
@@ -73,20 +99,28 @@ export default {
       dialog: false,
       headers: [{
         text: 'รหัสประจำตัวประชาชน',
-        align: 'center'
+        align: 'center',
+        value: 'citizen'
       }, {
         text: 'ยศ',
         value: 'rank',
         align: 'center'
       }, {
         text: 'ชื่อ',
-        align: 'center'
+        align: 'center',
+        value: 'fname'
       }, {
         text: 'นามสกุล',
-        align: 'center'
+        align: 'center',
+        value: 'lname'
+      }, {
+        text: "ตำแหน่ง",
+        align: 'center',
+        value: 'position'
       }, {
         text: 'วุฒิ / แก้ไข / ลบ',
         align: 'center',
+        value: 'cmd',
         sortable: false
     }],
       refSubDistricts: subDistricts,
@@ -96,6 +130,7 @@ export default {
       },
       items: [],
       zipcodes: [],
+      ranks: ranks,
       staff: {
         CITIZEN_ID: null,
         PREFIX_NAME_ID: null,
