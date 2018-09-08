@@ -20,15 +20,14 @@
     </v-flex>
   </v-layout>
 </v-container>
-<v-layout row justify-center>
-  <v-dialog v-model="dialog" persistent max-width="900px" scrollable>
+  <v-dialog v-model="dialog" persistent max-width="500px" scrollable>
     <v-card>
       <v-card-title>
         <span class="headline">ข้อมูลบุคลากร</span>
       </v-card-title>
       <v-card-text>
-        <v-container grid-list-md>
-          <v-layout row wrap>
+        <v-container grid-list-lg fluid>
+          <v-layout column>
             <v-flex xs6>
               <v-text-field label="เลขประจำตัวประชาชน" required></v-text-field>
             </v-flex>
@@ -54,7 +53,7 @@
             </v-flex>
             <v-flex xs5>
               <v-menu
-                ref="birthdayMenu"
+                ref="menuRef"
                 lazy
                 :close-on-content-click="false"
                 v-model="birthdayMenu"
@@ -63,19 +62,19 @@
                 full-width
                 :nudge-right="40"
                 min-width="290px"
-                :return-value.sync="staff.BIRTHDAY"
+                :return-value.sync="staff.BIRDTHDAY"
               >
                 <v-text-field
                   slot="activator"
-                  label="เลือกวันเกิด"
-                  v-model="staff.BIRTHDAY"
+                  label="วันเดือนปีเกิด"
+                  v-model="staff.BIRDTHDAY"
                   prepend-icon="event"
                   readonly
                 ></v-text-field>
-                  <v-date-picker v-model="staff.BIRTHDAY" no-title scrollable locale="th">
+                  <v-date-picker v-model="staff.BIRDTHDAY" no-title scrollable locale="th">
                     <v-spacer></v-spacer>
                     <v-btn flat color="primary" @click="birthdayMenu = false">ยกเลิก</v-btn>
-                    <v-btn flat color="primary" @click="$refs.birthdayMenu.save(staff.BIRTHDAY)">ตกลง</v-btn>
+                    <v-btn flat color="primary" @click="$refs.menuRef.save(staff.BIRDTHDAY)">ตกลง</v-btn>
                   </v-date-picker>
               </v-menu>
             </v-flex>
@@ -104,6 +103,9 @@
             </v-flex>
             <v-flex xs4>
               <!-- zipcode -->
+              <v-text-field
+                label="รหัสไปรษณีย์"
+              ></v-text-field>
             </v-flex>
             <v-flex xs4>
               <v-autocomplete v-model="staff.NATION_ID" :items="refNation" label="สัญชาติ"></v-autocomplete>
@@ -145,10 +147,58 @@
               <v-autocomplete :items="refFac" v-model="staff.DEPARTMENT_ID" label="คณะ / หน่วยงานที่สังกัด"></v-autocomplete>
             </v-flex>
             <v-flex xs4>
-              <v-date-picker v-model="staff.DATE_INWORK" :landscape="true" :reactive="true"></v-date-picker>
+              <v-menu
+                ref="menuRef2"
+                lazy
+                :close-on-content-click="false"
+                v-model="dateWork"
+                transition="scale-transition"
+                offset-y
+                full-width
+                :nudge-right="40"
+                min-width="290px"
+                :return-value.sync="staff.DATE_INWORK"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="วันที่บรรจุ"
+                  v-model="staff.DATE_INWORK"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+                  <v-date-picker v-model="staff.DATE_INWORK" no-title scrollable locale="th">
+                    <v-spacer></v-spacer>
+                    <v-btn flat color="primary" @click="dateWork = false">ยกเลิก</v-btn>
+                    <v-btn flat color="primary" @click="$refs.menuRef2.save(staff.DATE_INWORK)">ตกลง</v-btn>
+                  </v-date-picker>
+              </v-menu>
             </v-flex>
             <v-flex xs4>
-              <v-date-picker v-model="staff.DATE_START_THIS_U" :landscape="true" :reactive="true"></v-date-picker>
+              <v-menu
+                ref="menuRef3"
+                lazy
+                :close-on-content-click="false"
+                v-model="dateU"
+                transition="scale-transition"
+                offset-y
+                full-width
+                :nudge-right="40"
+                min-width="290px"
+                :return-value.sync="staff.DATE_START_THIS_U"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="วันที่เริ่มงาน"
+                  v-model="staff.DATE_START_THIS_U"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+                  <v-date-picker v-model="staff.DATE_START_THIS_U" no-title scrollable locale="th">
+                    <v-spacer></v-spacer>
+                    <v-btn flat color="primary" @click="dateU = false">ยกเลิก</v-btn>
+                    <v-btn flat color="primary" @click="$refs.menuRef3.save(staff.DATE_START_THIS_U)">ตกลง</v-btn>
+                  </v-date-picker>
+              </v-menu>
             </v-flex>
             <v-flex xs4>
               <v-autocomplete :items="refISCED" v-model="staff.SPECIAL_NAME_ID" label="สาขาวิชาที่เชี่ยวชาญ"></v-autocomplete>
@@ -197,10 +247,58 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs4>
-              <v-date-picker v-model="staff.PASSPORT_STARTDATE" :landscape="true" :reactive="true"></v-date-picker>
+              <v-menu
+                ref="menuRef4"
+                lazy
+                :close-on-content-click="false"
+                v-model="datePassStart"
+                transition="scale-transition"
+                offset-y
+                full-width
+                :nudge-right="40"
+                min-width="290px"
+                :return-value.sync="staff.PASSPORT_STARTDATE"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="วันเริ่มต้น Passport"
+                  v-model="staff.PASSPORT_STARTDATE"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+                  <v-date-picker v-model="staff.PASSPORT_STARTDATE" no-title scrollable locale="th">
+                    <v-spacer></v-spacer>
+                    <v-btn flat color="primary" @click="datePassStart = false">ยกเลิก</v-btn>
+                    <v-btn flat color="primary" @click="$refs.menuRef4.save(staff.PASSPORT_STARTDATE)">ตกลง</v-btn>
+                  </v-date-picker>
+              </v-menu>
             </v-flex>
             <v-flex xs4>
-              <v-date-picker v-model="staff.PASSPORT_ENDDATE" :landscape="true" :reactive="true"></v-date-picker>
+              <v-menu
+                ref="menuRef5"
+                lazy
+                :close-on-content-click="false"
+                v-model="datePassEnd"
+                transition="scale-transition"
+                offset-y
+                full-width
+                :nudge-right="40"
+                min-width="290px"
+                :return-value.sync="staff.PASSPORT_ENDDATE"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="วันที่ Passport หมดอายุ"
+                  v-model="staff.PASSPORT_ENDDATE"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+                  <v-date-picker v-model="staff.PASSPORT_ENDDATE" no-title scrollable locale="th">
+                    <v-spacer></v-spacer>
+                    <v-btn flat color="primary" @click="datePassEnd = false">ยกเลิก</v-btn>
+                    <v-btn flat color="primary" @click="$refs.menuRef5.save(staff.PASSPORT_ENDDATE)">ตกลง</v-btn>
+                  </v-date-picker>
+              </v-menu>
             </v-flex>
             <v-flex xs4>
               <v-select
@@ -214,12 +312,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-        <v-btn color="blue darken-1" flat @click.native="dialog = false">Save</v-btn>
+        <v-btn color="blue darken-1" flat @click.native="dialog = false">ยกเลิก</v-btn>
+        <v-btn color="blue darken-1" flat @click.native="dialog = false">บันทึก</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
-</v-layout>
   <v-btn fixed buttom right fab color="pink" dark @click.stop="add">
      <v-icon>add</v-icon>
   </v-btn>
@@ -266,6 +363,10 @@ export default {
       refISCED: refISCED,
       dialog: false,
       birthdayMenu: false,
+      dateWork: false,
+      dateU: false,
+      datePassEnd: false,
+      datePassStart: false,
       headers: [{
         text: 'รหัสประจำตัวประชาชน',
         align: 'center',
@@ -305,7 +406,7 @@ export default {
         STF_MNAME: '-',
         STF_LNAME: null,
         GENDER_ID: null,
-        BIRTHDAY: '2018-05-14',
+        BIRTHDAY: null,
         HOMEADD: null,
         MOO: null,
         STREET: null,
