@@ -2,20 +2,43 @@
   <v-container fluid fill-height>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-data-table
-        :headers="headers"
-        :items="items"
-        class="elevation-1"
-        :pagination.sync="pagination"
-      >
+      <v-data-table :headers="headers" :items="staffs" class="elevation-1" disable-initial-sort>
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.key }}</td>
-          <td class="text-xs-right">{{ props.item.key }}</td>
-          <td class="text-xs-right">{{ props.item.key }}</td>
-          <td class="text-xs-right">{{ props.item.key }}</td>
-          <td class="text-xs-right">{{ props.item.key }}</td>
+          <td>{{ props.item.CITIZEN_ID }}</td>
+          <td class="text-xs-left">{{ (refRank.find(e => e.value == props.item.PREFIX_NAME_ID)).text }}</td>
+          <td class="text-xs-left">{{ props.item.STF_FNAME }}</td>
+          <td class="text-xs-left">{{ props.item.STF_LNAME }}</td>
+          <td class="text-xs-left">{{ props.item.POSITION_WORK }}</td>
+          <td class="text-xs-center">
+            <v-btn color="success"><v-icon>school</v-icon></v-btn>
+            <v-btn color="warning"><v-icon>create</v-icon></v-btn>
+            <v-btn color="red" dark @click="remove(props.item)"><v-icon>delete</v-icon></v-btn>
+          </td>
         </template>
       </v-data-table>
+    </v-flex>
+    <v-flex xs12>
+      <v-dialog v-model="dialogStartup" persistent max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">เปิดไฟล์</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout row wrap>
+                <v-flex xs12>
+                  <v-subheader>ไฟล์ข้อมูลบุคลากร</v-subheader>
+                  <file-upload @load="staffs = $event;dialogStartup = false"></file-upload>
+                </v-flex>
+                <v-flex xs12>
+                  <v-subheader>ไฟล์ข้อมูลการศึกษาบุคลากร</v-subheader>
+                  
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-flex>
     <v-flex xs12>
       <v-dialog v-model="dialog" persistent max-width="500px">
@@ -157,8 +180,8 @@
 </template>
 
 <script>
-import XLSX from 'xlsx'
 import moment from 'moment'
+import fileUpload from './fileUpload'
 import refSubDistrict from '../json/refSubDistrict'
 import refRank from '../json/refRank'
 import refNation from '../json/refNation'
@@ -177,8 +200,11 @@ import prov from '../json/refProvince'
 import distr from '../json/refDistrict'
 export default {
   name: 'staffMgr',
+  components: { fileUpload },
   data () {
     return {
+      staffs: [],
+      staffGrads: [],
       refSubDistrict: refSubDistrict,
       refRank: refRank,
       refNation: refNation,
@@ -197,6 +223,7 @@ export default {
       refFac: refFac,
       refISCED: refISCED,
       dialog: false,
+      dialogStartup: true,
       year: parseInt(moment().format('YYYY')) + 543,
       headers: [{
         text: 'รหัสประจำตัวประชาชน',
@@ -204,7 +231,7 @@ export default {
         value: 'citizen'
       }, {
         text: 'ยศ',
-        value: 'rank',
+        value: 'PREFIX_NAME_ID',
         align: 'center'
       }, {
         text: 'ชื่อ',
@@ -224,12 +251,6 @@ export default {
         value: 'cmd',
         sortable: false
     }],
-      pagination: {
-        sortBy: 'rank',
-        descending: true
-      },
-      items: [],
-      zipcodes: [],
       staff: {
         CITIZEN_ID: null,
         PREFIX_NAME_ID: null,
@@ -273,25 +294,13 @@ export default {
     }
   },
   methods: {
-    handleFile(e) {
-      var rABS = true // true: readAsBinaryString ; false: readAsArrayBuffer
-      var files = e.target.files, f = files[0]
-      var reader = new FileReader()
-      reader.onload = function(e) {
-        var data = e.target.result
-        if(!rABS) data = new Uint8Array(data)
-        var workbook = XLSX.read(data, {type: rABS ? 'binary' : 'array'})
-        var first_worksheet = workbook.Sheets[workbook.SheetNames[0]]
-        var data = XLSX.utils.sheet_to_json(first_worksheet)
-        console.log(data)
-        
-        /* DO SOMETHING WITH workbook HERE */
-      };
-      if(rABS) reader.readAsBinaryString(f); else reader.readAsArrayBuffer(f);
-    }, 
     add () {
       this.clear()
       this.dialog = true
+      console.log(this.staffs)
+    },
+    remove (item) {
+      console.log(index)
     },
     clear () {
       this.staff = {
