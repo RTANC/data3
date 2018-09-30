@@ -340,6 +340,8 @@ import refMovmentType from '../json/refMovmentType'
 import refReligion from '../json/refReligion'
 import refISCED from '../json/refISCED'
 import refFac from '../json/refFac'
+import prov from '../json/refProvince'
+import distr from '../json/refDistrict'
 export default {
   name: 'staffMgr',
   data () {
@@ -436,7 +438,9 @@ export default {
         PASSPORT_STARTDATE: null,
         PASSPORT_ENDDATE: null,
         PASSPORT_STATUS: null
-      }
+      },
+      prov: prov,
+      distr: distr
     }
   },
   methods: {
@@ -507,10 +511,22 @@ export default {
       } catch (error) {
         console.log('Get zipcode error')
       }
+    },
+    sortJSON () {
+     const cc =  this.refSubDistrict.map((sd) => {
+        var did = sd.value.substring(0, 2)
+        return {
+          value: sd.value,
+          text: sd.text + ' ' + (this.prov.find((d) => {
+            return d.value == did
+          })).text
+        }
+      })
+      console.log(JSON.stringify(cc))
     }
   },
   mounted () {
-    this.getZipCodes()
+    // this.sortJSON()
   }
 }
 </script>
