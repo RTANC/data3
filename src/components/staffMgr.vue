@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid fill-height>
+<v-container fluid fill-height>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-data-table :headers="headers" :items="staffs" class="elevation-1" disable-initial-sort>
+      <v-data-table :headers="headers" :items="staffs" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
         <template slot="items" slot-scope="props">
           <td>{{ props.item.CITIZEN_ID }}</td>
           <td class="text-xs-left">{{ (refRank.find(e => e.value == props.item.PREFIX_NAME_ID)).text }}</td>
@@ -12,7 +12,7 @@
           <td class="text-xs-center">
             <v-btn color="success"><v-icon>school</v-icon></v-btn>
             <v-btn color="warning"><v-icon>create</v-icon></v-btn>
-            <v-btn color="red" dark @click="remove(props.item)"><v-icon>delete</v-icon></v-btn>
+            <v-btn color="red" dark @click="remove(props.index)"><v-icon>delete</v-icon></v-btn>
           </td>
         </template>
       </v-data-table>
@@ -28,11 +28,11 @@
               <v-layout row wrap>
                 <v-flex xs12>
                   <v-subheader>ไฟล์ข้อมูลบุคลากร</v-subheader>
-                  <file-upload @load="staffs = $event;dialogStartup = false"></file-upload>
+                  <file-upload @load="staffs = $event"></file-upload>
                 </v-flex>
                 <v-flex xs12>
                   <v-subheader>ไฟล์ข้อมูลการศึกษาบุคลากร</v-subheader>
-                  
+                   <file-upload @load="staffs = $event;dialogStartup = false" v-if="staffs.length > 0"></file-upload>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -171,9 +171,15 @@
   </v-dialog>
     </v-flex>
   <v-flex xs12>
-    <v-btn fixed buttom right fab color="pink" dark @click.stop="add">
+    <simplert :useRadius="true"
+          :useIcon="true"
+          ref="simplert">
+    </simplert>
+  </v-flex>
+  <v-flex xs12>
+    <v-btn absolute top right fab color="pink" dark @click.stop="add">
      <v-icon>add</v-icon>
-  </v-btn>
+    </v-btn>
   </v-flex>
   </v-layout>
 </v-container>
@@ -181,6 +187,7 @@
 
 <script>
 import moment from 'moment'
+import Simplert from 'vue2-simplert'
 import fileUpload from './fileUpload'
 import refSubDistrict from '../json/refSubDistrict'
 import refRank from '../json/refRank'
@@ -200,7 +207,7 @@ import prov from '../json/refProvince'
 import distr from '../json/refDistrict'
 export default {
   name: 'staffMgr',
-  components: { fileUpload },
+  components: { fileUpload , Simplert},
   data () {
     return {
       staffs: [],
@@ -225,6 +232,9 @@ export default {
       dialog: false,
       dialogStartup: true,
       year: parseInt(moment().format('YYYY')) + 543,
+      pagination: {
+        rowsPerPage: 10
+      },
       headers: [{
         text: 'รหัสประจำตัวประชาชน',
         align: 'center',
@@ -299,8 +309,19 @@ export default {
       this.dialog = true
       console.log(this.staffs)
     },
-    remove (item) {
-      console.log(index)
+    remove (index) {
+      const obj = {
+        title: 'คำเตือน',
+        message: 'ท่านยืนยันที่จะลบบุคลากรดังกล่าว ใช่ หรือ ไม่',
+        type: 'warning',
+        useConfirmBtn: true,
+        onConfirm: () =>  {
+          this.staffs.splice(((this.pagination.page - 1) * this.pagination.rowsPerPage) + index, 1)
+        },
+        customConfirmBtnText: 'ใช่',
+        customCloseBtnText: 'ไม่'
+      }
+      this.$refs.simplert.openSimplert(obj)
     },
     clear () {
       this.staff = {
