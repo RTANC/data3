@@ -10,13 +10,12 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
     "moment": "^2.22.2",
+    "papaparse": "^4.6.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue2-simplert": "^0.8.0",
-    "vuetify": "^1.0.0",
-    "xlsx": "^0.13.3"
+    "vuetify": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

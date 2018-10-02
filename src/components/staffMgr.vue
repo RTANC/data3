@@ -27,12 +27,15 @@
             <v-container grid-list-md>
               <v-layout row wrap>
                 <v-flex xs12>
+                  <v-text-field label="ปีการศึกษา" v-model="YEAR"></v-text-field>
+                </v-flex>
+                <v-flex xs12>
                   <v-subheader>ไฟล์ข้อมูลบุคลากร</v-subheader>
-                  <file-upload @load="staffs = $event"></file-upload>
+                  <file-upload @load="staffs = $event" v-if="YEAR" :YEAR="YEAR" :UNIV_ID="20800"></file-upload>
                 </v-flex>
                 <v-flex xs12>
                   <v-subheader>ไฟล์ข้อมูลการศึกษาบุคลากร</v-subheader>
-                   <file-upload @load="staffs = $event;dialogStartup = false" v-if="staffs.length > 0"></file-upload>
+                   <file-upload @load="staffGrads = $event;dialogStartup = false" v-if="staffs.length > 0"></file-upload>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -231,7 +234,7 @@ export default {
       refISCED: refISCED,
       dialog: false,
       dialogStartup: true,
-      year: parseInt(moment().format('YYYY')) + 543,
+      YEAR: parseInt(moment().format('YYYY')) + 543,
       pagination: {
         rowsPerPage: 10
       },
@@ -307,7 +310,6 @@ export default {
     add () {
       this.clear()
       this.dialog = true
-      console.log(this.staffs)
     },
     remove (index) {
       const obj = {
