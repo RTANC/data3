@@ -2,7 +2,7 @@
 <v-container fluid fill-height>
   <v-layout row wrap>
     <v-flex xs12>
-      <v-data-table :headers="headers" :items="staffs" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
+      <v-data-table :headers="headers" :items="$store.getters.staffs" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
         <template slot="items" slot-scope="props">
           <td>{{ props.item.CITIZEN_ID }}</td>
           <td class="text-xs-left">{{ (refRank.find(e => e.value == props.item.PREFIX_NAME_ID)).text }}</td>
@@ -10,7 +10,7 @@
           <td class="text-xs-left">{{ props.item.STF_LNAME }}</td>
           <td class="text-xs-left">{{ props.item.POSITION_WORK }}</td>
           <td class="text-xs-center">
-            <v-btn color="success"><v-icon>school</v-icon></v-btn>
+            <v-btn color="success" :to="{ name: 'staffGradMgr', params: { id: props.item.CITIZEN_ID } }"><v-icon>school</v-icon></v-btn>
             <v-btn color="warning"><v-icon>create</v-icon></v-btn>
             <v-btn color="red" dark @click="remove(props.index)"><v-icon>delete</v-icon></v-btn>
           </td>
@@ -31,15 +31,18 @@
                 </v-flex>
                 <v-flex xs12>
                   <v-subheader>ไฟล์ข้อมูลบุคลากร</v-subheader>
-                  <file-upload @load="staffs = $event" v-if="YEAR" :YEAR="YEAR" :UNIV_ID="20800"></file-upload>
+                  <file-upload :YEAR="YEAR" :UNIV_ID="UNIV_ID"></file-upload>
                 </v-flex>
                 <v-flex xs12>
                   <v-subheader>ไฟล์ข้อมูลการศึกษาบุคลากร</v-subheader>
-                   <file-upload @load="staffGrads = $event;dialogStartup = false" v-if="staffs.length > 0"></file-upload>
+                   <file-upload></file-upload>
                 </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
+          <v-card-actions>
+            <v-btn block color="primary" @click="dialogStartup = false;"  :disabled="(($store.getters.staffs.length == 0 || $store.getters.staffGrads.length == 0) ? true : false)">ตกลง</v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
     </v-flex>
@@ -210,11 +213,9 @@ import prov from '../json/refProvince'
 import distr from '../json/refDistrict'
 export default {
   name: 'staffMgr',
-  components: { fileUpload , Simplert},
+  components: { fileUpload , Simplert },
   data () {
     return {
-      staffs: [],
-      staffGrads: [],
       refSubDistrict: refSubDistrict,
       refRank: refRank,
       refNation: refNation,
@@ -235,6 +236,7 @@ export default {
       dialog: false,
       dialogStartup: true,
       YEAR: parseInt(moment().format('YYYY')) + 543,
+      UNIV_ID: 20800,
       pagination: {
         rowsPerPage: 10
       },
@@ -318,7 +320,8 @@ export default {
         type: 'warning',
         useConfirmBtn: true,
         onConfirm: () =>  {
-          this.staffs.splice(((this.pagination.page - 1) * this.pagination.rowsPerPage) + index, 1)
+          index = ((this.pagination.page - 1) * this.pagination.rowsPerPage) + index
+          this.$store.dispatch('removeStaff', index)
         },
         customConfirmBtnText: 'ใช่',
         customCloseBtnText: 'ไม่'
