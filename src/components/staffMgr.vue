@@ -26,14 +26,17 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout row wrap>
-                <v-flex xs12>
+                <v-flex xs3>
                   <v-text-field label="ปีการศึกษา" v-model="YEAR"></v-text-field>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs9>
+                  <v-select v-model="UNIV_ID" :items="refUniv" label="สถาบันของท่าน"></v-select>
+                </v-flex>
+                <v-flex xs12 v-if="YEAR !== null && UNIV_ID !== null">
                   <v-subheader>ไฟล์ข้อมูลบุคลากร</v-subheader>
                   <file-upload :YEAR="YEAR" :UNIV_ID="UNIV_ID"></file-upload>
                 </v-flex>
-                <v-flex xs12>
+                <v-flex xs12 v-if="YEAR !== null && UNIV_ID !== null">
                   <v-subheader>ไฟล์ข้อมูลการศึกษาบุคลากร</v-subheader>
                    <file-upload></file-upload>
                 </v-flex>
@@ -209,6 +212,7 @@ import refMovmentType from '../json/refMovmentType'
 import refReligion from '../json/refReligion'
 import refISCED from '../json/refISCED'
 import refFac from '../json/refFac'
+import refUniv from '../json/refUniv'
 import prov from '../json/refProvince'
 import distr from '../json/refDistrict'
 export default {
@@ -232,11 +236,12 @@ export default {
       refReligion: refReligion,
       refTimeContact: refTimeContact,
       refFac: refFac,
+      refUniv: refUniv,
       refISCED: refISCED,
       dialog: false,
-      dialogStartup: true,
+      dialogStartup: ((this.$store.getters.staffs.length == 0 || this.$store.getters.staffGrads.length == 0) ? true : false),
       YEAR: parseInt(moment().format('YYYY')) + 543,
-      UNIV_ID: 20800,
+      UNIV_ID: null,
       pagination: {
         rowsPerPage: 10
       },

@@ -5,7 +5,7 @@
             <p class="heading">การศึกษา {{$route.params.id}}</p>
         </v-flex>
         <v-flex xs12>
-            <v-data-table :headers="headers" :items="$store.getters.staffGrads" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
+            <v-data-table :headers="headers" :items="$store.getters.staffGradById($route.params.id)" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
                 <template slot="items" slot-scope="props">
                     <td>{{ (gradLvl.find(x => x.value == props.item.GRAD_LEV_ID )).text }}</td>
                     <td class="text-xs-right">{{ props.item.GRAD_CURR }}</td>
