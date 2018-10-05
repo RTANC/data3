@@ -7,7 +7,7 @@
         <v-flex xs12>
             <v-data-table :headers="headers" :items="$store.getters.staffGrads" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
                 <template slot="items" slot-scope="props">
-                    <td>{{ props.item.GRAD_LEV_ID }}</td>
+                    <td>{{ (gradLvl.find(x => x.value == props.item.GRAD_LEV_ID )).text }}</td>
                     <td class="text-xs-right">{{ props.item.GRAD_CURR }}</td>
                     <td class="text-xs-right">{{ props.item.GRAD_ISCED_ID }}</td>
                     <td class="text-xs-right">{{ props.item.GRAD_PROG }}</td>
@@ -21,10 +21,12 @@
 </template>
 
 <script>
+import refGradLevId from '../json/refGradLevId'
 export default {
     name: 'staffGradMgr',
     data () {
         return {
+            gradLvl: refGradLevId,
             headers: [{
                 text: 'ระดับการศึกษาที่จบ',
                 align: 'center',

@@ -12,9 +12,10 @@ export const store = new Vuex.Store({
         staffs: state => {
             return state.staffs
         },
-        staffGrads: state => {
+        staffGrads: (state) => {
             return state.staffGrads
-        }
+        },
+        staffGradById: state => id => state.staffGrads.filter(x => x.CITIZEN_ID === id)
     },
     mutations: {
         setStaffs: (state, staffs) => {
