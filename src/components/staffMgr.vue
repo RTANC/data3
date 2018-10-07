@@ -2,6 +2,12 @@
 <v-container fluid fill-height>
   <v-layout row wrap>
     <v-flex xs12>
+      <v-card>
+      <v-toolbar dense card class="elevation-1">
+        <v-toolbar-title class="heading">ข้อมูลทั่วไป</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click.stop="add">เพิ่ม</v-btn>
+      </v-toolbar>
       <v-data-table :headers="headers" :items="$store.getters.staffs" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
         <template slot="items" slot-scope="props">
           <td>{{ props.item.CITIZEN_ID }}</td>
@@ -10,12 +16,13 @@
           <td class="text-xs-left">{{ props.item.STF_LNAME }}</td>
           <td class="text-xs-left">{{ props.item.POSITION_WORK }}</td>
           <td class="text-xs-center">
-            <v-btn color="success" :to="{ name: 'staffGradMgr', params: { id: props.item.CITIZEN_ID } }"><v-icon>school</v-icon></v-btn>
-            <v-btn color="warning"><v-icon>create</v-icon></v-btn>
-            <v-btn color="red" dark @click="remove(props.index)"><v-icon>delete</v-icon></v-btn>
+            <v-btn color="success" :to="{ name: 'staffGradMgr', params: { id: props.item.CITIZEN_ID } }" icon flat><v-icon>school</v-icon></v-btn>
+            <v-btn color="info" icon flat><v-icon>create</v-icon></v-btn>
+            <v-btn color="red" dark @click="remove(props.index)" icon flat><v-icon>delete</v-icon></v-btn>
           </td>
         </template>
       </v-data-table>
+      </v-card>
     </v-flex>
     <v-flex xs12>
       <v-dialog v-model="dialogStartup" persistent max-width="500px">
@@ -185,11 +192,6 @@
           ref="simplert">
     </simplert>
   </v-flex>
-  <v-flex xs12>
-    <v-btn absolute top right fab color="pink" dark @click.stop="add">
-     <v-icon>add</v-icon>
-    </v-btn>
-  </v-flex>
   </v-layout>
 </v-container>
 </template>
@@ -321,7 +323,7 @@ export default {
     remove (index) {
       const obj = {
         title: 'คำเตือน',
-        message: 'ท่านยืนยันที่จะลบบุคลากรดังกล่าว ใช่ หรือ ไม่',
+        message: 'ท่านยืนยันที่จะลบข้อมูลดังกล่าว ใช่ หรือ ไม่',
         type: 'warning',
         useConfirmBtn: true,
         onConfirm: () =>  {

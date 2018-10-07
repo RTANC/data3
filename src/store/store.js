@@ -27,11 +27,20 @@ export const store = new Vuex.Store({
         addStaff: (state, staff) => {
             state.push(staff)
         },
-        editStaff: (state, index, staff) => {
-            state.staffs[index] = staff
+        editStaff: (state, payload) => {
+            state.staffs[payload.index] = payload.staff
         },
         removeStaff: (state, index) => {
             state.staffs.splice(index, 1)
+        },
+        addStaffGrad: (state, staffGrad) => {
+            state.staffGrads.push(staffGrad)
+        },
+        editStaffGrad: (state, payload) => {
+            state.staffGrads[payload.index] = payload.staffGrad
+        },
+        removeStaffGrad: (state, index) => {
+            state.staffGrads.splice(index, 1)
         }
     },
     actions: {
@@ -44,11 +53,20 @@ export const store = new Vuex.Store({
         addStaff: (context, staff) => {
             context.commit('addStaff', staff)
         },
-        editStaff: (context, index, staff) => {
-            context.commit('editStaff', index, staff)
+        editStaff: (context, payload) => {
+            context.commit('editStaff', payload)
         },
         removeStaff: (context, index) => {
             context.commit('removeStaff', index)
+        },
+        addStaffGrad: (context, staffGrad) => {
+            context.commit('addStaffGrad', staffGrad)
+        },
+        editStaffGrad: (context, payload) => {
+            context.commit('editStaffGrad', payload)
+        },
+        removeStaffGrad: (context, index) => {
+            context.commit('removeStaffGrad', index)
         }
     }
 })
