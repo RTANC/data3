@@ -7,6 +7,7 @@
 <script>
 import Papa from 'papaparse'
 import moment from 'moment'
+import uuid from 'uuid'
 export default {
   name: 'fileUpload',
   props: {
@@ -75,6 +76,7 @@ export default {
               const staffGrads = []
               results.forEach(r => {
                 staffGrads.push({
+                  key: uuid(),
                   CITIZEN_ID: r[0],
                   GRAD_LEV_ID: r[1],
                   GRAD_CURR: r[2],

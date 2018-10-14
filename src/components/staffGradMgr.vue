@@ -6,7 +6,7 @@
                 <v-toolbar dense card class="elevation-1">
                     <v-toolbar-title>ข้อมูลการศึกษา</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" @click="clear;dialog = true;">เพิ่ม</v-btn>
+                    <v-btn color="primary" @click.native="create">เพิ่ม</v-btn>
                 </v-toolbar>
                 <v-data-table :headers="headers" :items="$store.getters.staffGradById($route.params.id)" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
                     <template slot="items" slot-scope="props">
@@ -17,8 +17,8 @@
                         <td class="text-xs-right">{{ props.item.GRAD_UNIV }}</td>
                         <td class="text-xs-right">{{ props.item.GRAD_COUNTRY_ID }}</td>
                         <td class="text-xs-center">
-                            <v-btn color="info" @click="staffGrad = props.item;idx = props.index;dialog = true;" icon flat><v-icon>create</v-icon></v-btn>
-                            <v-btn color="error" @click="remove(props.item.CITIZEN_ID, props.index)" icon flat><v-icon>delete</v-icon></v-btn>
+                            <v-btn color="info" @click="edit(props.item);" icon flat><v-icon>create</v-icon></v-btn>
+                            <v-btn color="error" @click="remove(props.item.key)" icon flat><v-icon>delete</v-icon></v-btn>
                         </td>
                     </template>
                 </v-data-table>
@@ -26,43 +26,25 @@
         </v-flex>
         <v-flex xs12>
             <v-layout row justify-center>
-                <v-dialog v-model="dialog" persistent max-width="500px">
+                    <v-dialog v-model="dialog" persistent max-width="500px">
                     <v-card>
                         <v-card-title>
                             <span class="headline">ข้อมูลการศึกษา</span>
                         </v-card-title>
                         <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout wrap>
-                                    <v-flex xs12 sm6 md4>
-                                        <v-select
-                                            :items="gradLvl"
-                                            v-model="staffGrad.GRAD_LEV_ID"
-                                            label="ระดับการศึกษาที่จบ"
-                                        ></v-select>
-                                    </v-flex>
-                                    <v-flex xs12 sm6 md8>
-                                        <v-text-field label="ชื่อหลักสูตร" v-model="staffGrad.GRAD_CURR"></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm6 md12>
-                                        <v-autocomplete :items="refISCED" v-model="staffGrad.GRAD_ISCED_ID" label="ประเภทวิชาเอก"></v-autocomplete>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-text-field label="วิชาเอก" v-model="staffGrad.GRAD_PROG" required></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12>
-                                        <v-text-field label="ชื่อสถาบัน" v-model="staffGrad.GRAD_UNIV" required></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm6>
-                                        <v-autocomplete label="ประเทศที่จบ" :items="refNation" v-model="staffGrad.GRAD_COUNTRY_ID"></v-autocomplete>
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
+                            <v-form ref="form" v-model="valid">
+                                <v-select :items="gradLvl" v-model="GRAD_LEV_ID" label="ระดับการศึกษาที่จบ" :rules="[v  => !!v || 'ท่านจำเป็นต้องเลือก ระดับการศึกษา']" required></v-select>
+                                <v-text-field label="ชื่อหลักสูตร" v-model="GRAD_CURR" :rules="[v => !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้']" required></v-text-field>
+                                <v-autocomplete :items="refISCED" v-model="GRAD_ISCED_ID" label="ประเภทวิชาเอก" :rules="[v => !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้']" required></v-autocomplete>
+                                <v-text-field label="วิชาเอก" v-model="GRAD_PROG" :rules="[v => !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้']" required></v-text-field>
+                                <v-text-field label="ชื่อสถาบันที่จบ" v-model="GRAD_UNIV" :rules="[v => !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้']" required></v-text-field>
+                                <v-autocomplete label="ประเทศที่จบ" :items="refNation" v-model="GRAD_COUNTRY_ID" :rules="[v => !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้']" required></v-autocomplete>
+                            </v-form>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" flat @click="dialog = false;clear;">Close</v-btn>
-                            <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+                            <v-btn color="blue darken-1" flat @click="clear">Close</v-btn>
+                            <v-btn color="blue darken-1" flat @click="save" :disabled="!valid">Save</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -83,6 +65,7 @@ import refGradLevId from '../json/refGradLevId'
 import refISCED from '../json/refISCED'
 import refNation from '../json/refNation'
 import Simplert from 'vue2-simplert'
+import uuid from 'uuid'
 export default {
     name: 'staffGradMgr',
     components: { Simplert },
@@ -92,16 +75,15 @@ export default {
             dialog: false,
             refISCED: refISCED,
             refNation: refNation,
-            idx: null,
-            staffGrad: {
-                CITIZEN_ID: null,
-                GRAD_LEV_ID: null,
-                GRAD_CURR: null,
-                GRAD_ISCED_ID: null,
-                GRAD_PROG: null,
-                GRAD_UNIV: null,
-                GRAD_COUNTRY_ID: null
-            },
+            valid: false,
+            key: null,
+            CITIZEN_ID: null,
+            GRAD_LEV_ID: null,
+            GRAD_CURR: null,
+            GRAD_ISCED_ID: null,
+            GRAD_PROG: null,
+            GRAD_UNIV: null,
+            GRAD_COUNTRY_ID: null,
             headers: [{
                 text: 'ระดับการศึกษาที่จบ',
                 align: 'center',
@@ -137,42 +119,65 @@ export default {
         }
     },
     methods: {
+        edit (val) {
+            this.key = val.key
+            this.CITIZEN_ID = val.CITIZEN_ID
+            this.GRAD_LEV_ID = val.GRAD_LEV_ID
+            this.GRAD_CURR = val.GRAD_CURR
+            this.GRAD_ISCED_ID = val.GRAD_ISCED_ID
+            this.GRAD_PROG = val.GRAD_PROG
+            this.GRAD_UNIV = val.GRAD_UNIV
+            this.GRAD_COUNTRY_ID = val.GRAD_COUNTRY_ID
+            this.dialog = true
+        },
         clear () {
-            this.staffGrad = {
-                CITIZEN_ID: null,
-                GRAD_LEV_ID: null,
-                GRAD_CURR: null,
-                GRAD_ISCED_ID: null,
-                GRAD_PROG: null,
-                GRAD_UNIV: null,
-                GRAD_COUNTRY_ID: null
-            }
+            this.$refs.form.reset()
+            this.key = null
+            this.dialog = false
+        },
+        create () {
+            this.dialog = true
         },
         save () {
-            if (!this.staffGrad.CITIZEN_ID) {
+            if (!this.key) {
                 //add
-                this.$store.dispatch('addStaffGrad', this.staffGrad)
+                // const staffGrad = {
+                //     key: uuid(),
+                //     CITIZEN_ID: this.$route.params.id,
+                //     GRAD_LEV_ID: this.$refs.form.inputs[0].value,
+                //     GRAD_CURR: this.$refs.form.inputs[1].value,
+                //     GRAD_ISCED_ID: this.$refs.form.inputs[2].value,
+                //     GRAD_PROG: this.$refs.form.inputs[3].value,
+                //     GRAD_UNIV: this.$refs.form.inputs[4].value,
+                //     GRAD_COUNTRY_ID: this.$refs.form.inputs[5].value
+                // }
+                // this.$store.dispatch('addStaffGrad', staffGrad)
             } else {
                 //edit
-                const i = this.$store.getters.staffGrads.findIndex(e => {
-                    return e.CITIZEN_ID === this.staffGrad.CITIZEN_ID
-                })
-                this.$store.dispatch('editStaffGrad', {index: (i + this.idx),staffGrad:  this.staffGrad})
+                this.$store.dispatch('editStaffGrad', {index: this.index,staffGrad: {
+                index: this.index,
+                CITIZEN_ID: this.CITIZEN_ID,
+                GRAD_LEV_ID: this.GRAD_LEV_ID,
+                GRAD_CURR: this.GRAD_CURR,
+                GRAD_ISCED_ID: this.GRAD_ISCED_ID,
+                GRAD_PROG: this.GRAD_PROG,
+                GRAD_UNIV: this.GRAD_UNIV,
+                GRAD_COUNTRY_ID: this.GRAD_COUNTRY_ID
+            }})
             }
-            this.dialog = false
             this.clear()
         },
-        remove (key, index) {
+        remove (key) {
             const obj = {
                 title: 'คำเตือน',
                 message: 'ท่านยืนยันที่จะลบข้อมูลดังกล่าว ใช่ หรือ ไม่',
                 type: 'warning',
                 useConfirmBtn: true,
                 onConfirm: () =>  {
-                  const i = this.$store.getters.staffGrads.findIndex(e => {
-                      return e.CITIZEN_ID === key
+                    const i = this.$store.getters.staffGrads.findIndex(e => {
+                      return e.key === key
                     })
-                  this.$store.dispatch('removeStaffGrad', index + i)
+                  this.$store.dispatch('removeStaffGrad', i)
                 },
                 customConfirmBtnText: 'ใช่',
                 customCloseBtnText: 'ไม่'
