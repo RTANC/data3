@@ -139,23 +139,26 @@ export default {
             this.dialog = true
         },
         save () {
+            console.log(this.key)
             if (!this.key) {
                 //add
-                // const staffGrad = {
-                //     key: uuid(),
-                //     CITIZEN_ID: this.$route.params.id,
-                //     GRAD_LEV_ID: this.$refs.form.inputs[0].value,
-                //     GRAD_CURR: this.$refs.form.inputs[1].value,
-                //     GRAD_ISCED_ID: this.$refs.form.inputs[2].value,
-                //     GRAD_PROG: this.$refs.form.inputs[3].value,
-                //     GRAD_UNIV: this.$refs.form.inputs[4].value,
-                //     GRAD_COUNTRY_ID: this.$refs.form.inputs[5].value
-                // }
-                // this.$store.dispatch('addStaffGrad', staffGrad)
+                this.$store.dispatch('addStaffGrad', {
+                    key: uuid(),
+                    CITIZEN_ID: this.$route.params.id,
+                    GRAD_LEV_ID: this.GRAD_LEV_ID,
+                    GRAD_CURR: this.GRAD_CURR,
+                    GRAD_ISCED_ID: this.GRAD_ISCED_ID,
+                    GRAD_PROG: this.GRAD_PROG,
+                    GRAD_UNIV: this.GRAD_UNIV,
+                    GRAD_COUNTRY_ID: this.GRAD_COUNTRY_ID
+                })
             } else {
                 //edit
-                this.$store.dispatch('editStaffGrad', {index: this.index,staffGrad: {
-                index: this.index,
+                const i = this.$store.getters.staffGrads.findIndex(e => {
+                    return e.key === this.key
+                })
+                this.$store.dispatch('editStaffGrad', {index: i,staffGrad: {
+                key: this.key,
                 CITIZEN_ID: this.CITIZEN_ID,
                 GRAD_LEV_ID: this.GRAD_LEV_ID,
                 GRAD_CURR: this.GRAD_CURR,

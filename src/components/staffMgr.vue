@@ -63,7 +63,8 @@
         <span class="headline">User Profile</span>
       </v-card-title>
       <v-card-text>
-        <v-container grid-list-md>
+        <v-form ref="form" v-model="valid">
+          <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
               <v-text-field label="เลขประจำตัวประชาชน" mask="#-####-#####-##-#" v-model="staff.CITIZEN_ID"></v-text-field>
@@ -176,12 +177,13 @@
             </v-flex>
           </v-layout>
         </v-container>
+        </v-form>
         <small>*indicates required field</small>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click.native="dialog = false">Close</v-btn>
-        <v-btn color="blue darken-1" flat @click.native="dialog = false">Save</v-btn>
+        <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
+        <v-btn color="blue darken-1" flat @click="dialog = false">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -244,6 +246,7 @@ export default {
       dialogStartup: ((this.$store.getters.staffs.length == 0 || this.$store.getters.staffGrads.length == 0) ? true : false),
       YEAR: parseInt(moment().format('YYYY')) + 543,
       UNIV_ID: null,
+      valid: false,
       pagination: {
         rowsPerPage: 10
       },
