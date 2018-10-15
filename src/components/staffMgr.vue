@@ -6,7 +6,7 @@
       <v-toolbar dense card class="elevation-1">
         <v-toolbar-title class="heading">ข้อมูลทั่วไป</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click.stop="add">เพิ่ม</v-btn>
+        <v-btn color="primary" @click="create">เพิ่ม</v-btn>
       </v-toolbar>
       <v-data-table :headers="headers" :items="$store.getters.staffs" class="elevation-1" disable-initial-sort :pagination.sync="pagination">
         <template slot="items" slot-scope="props">
@@ -17,7 +17,7 @@
           <td class="text-xs-left">{{ props.item.POSITION_WORK }}</td>
           <td class="text-xs-center">
             <v-btn color="success" :to="{ name: 'staffGradMgr', params: { id: props.item.CITIZEN_ID } }" icon flat><v-icon>school</v-icon></v-btn>
-            <v-btn color="info" icon flat><v-icon>create</v-icon></v-btn>
+            <v-btn color="info" icon flat @click="update(props.item)"><v-icon>create</v-icon></v-btn>
             <v-btn color="red" dark @click="remove(props.index)" icon flat><v-icon>delete</v-icon></v-btn>
           </td>
         </template>
@@ -67,113 +67,113 @@
           <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field label="เลขประจำตัวประชาชน" mask="#-####-#####-##-#" v-model="staff.CITIZEN_ID"></v-text-field>
+              <v-text-field label="เลขประจำตัวประชาชน" mask="#-####-#####-##-#" v-model="CITIZEN_ID"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md2>
-              <v-select :items="refRank" v-model="staff.PREFIX_NAME_ID" label="ยศ"></v-select>
+              <v-select :items="refRank" v-model="PREFIX_NAME_ID" label="ยศ"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field label="ชื่อ"></v-text-field>
+              <v-text-field label="ชื่อ" v-model="STF_FNAME"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field label="นามสกุล" required></v-text-field>
+              <v-text-field label="นามสกุล" v-model="STF_LNAME" required></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md7>
-              <v-radio-group v-model="staff.GENDER_ID" row label="เพศ">
+              <v-radio-group v-model="GENDER_ID" row label="เพศ">
                 <v-radio label="ชาย" value="1" ></v-radio>
                 <v-radio label="หญิง" value="2"></v-radio>
               </v-radio-group>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field label="วันเกิด" v-model="staff.BIRTHDAY" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field label="วันเกิด" v-model="BIRTHDAY" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
-              <v-text-field label="บ้านเลขที่" v-model="staff.HOMEADD"></v-text-field>
+              <v-text-field label="บ้านเลขที่" v-model="HOMEADD"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md2>
-              <v-text-field label="หมู่ที่" type="number" v-model="staff.MOO"></v-text-field>
+              <v-text-field label="หมู่ที่" type="number" v-model="MOO"></v-text-field>
             </v-flex>
             <v-flex xs12 md6>
-              <v-text-field label="ถนน"  v-model="staff.STREET"></v-text-field>
+              <v-text-field label="ถนน"  v-model="STREET"></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete label="ตำบล" v-model="staff.SUB_DISTRICT_ID" :items="refSubDistrict"></v-autocomplete>
+              <v-autocomplete label="ตำบล" v-model="SUB_DISTRICT_ID" :items="refSubDistrict"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field label="เบอร์โทรศัพท์ (ที่ทำงาน)"  v-model="staff.TELEPHONE"></v-text-field>
+              <v-text-field label="เบอร์โทรศัพท์ (ที่ทำงาน)"  v-model="TELEPHONE"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field label="รหัสไปรษณีย์"  v-model="staff.ZIPCODE"></v-text-field>
+              <v-text-field label="รหัสไปรษณีย์"  v-model="ZIPCODE"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-autocomplete label="สัญชาติ" v-model="staff.NATION_ID"></v-autocomplete>
+              <v-autocomplete label="สัญชาติ" v-model="NATION_ID"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select v-model="staff.STAFFTYPE_ID" label="ประเภทบุคลากร" :items="[{value: '1', text: 'ข้าราชการ'},{value: '2', text: 'พนักงานมหาวิทยาลัย'},{value: '3', text: 'ลูกจ้างประจำ'},{value: '4', text: 'ลูกจ้างชั่วคราว'},{value: '5', text: 'พนักงานราชการ'}]"></v-select>
+              <v-select v-model="STAFFTYPE_ID" label="ประเภทบุคลากร" :items="[{value: '1', text: 'ข้าราชการ'},{value: '2', text: 'พนักงานมหาวิทยาลัย'},{value: '3', text: 'ลูกจ้างประจำ'},{value: '4', text: 'ลูกจ้างชั่วคราว'},{value: '5', text: 'พนักงานราชการ'}]"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-radio-group v-model="staff.SUBSTAFFTYPE_ID" row>
+              <v-radio-group v-model="SUBSTAFFTYPE_ID" row>
                 <v-radio label="มีชั่วโมงสอน" value="1" ></v-radio>
                 <v-radio label="ไม่มีชั่วโมงสอน" value="2"></v-radio>
                 <v-radio label="มีชั่วโมงช่วยสอน" value="3"></v-radio>
               </v-radio-group>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select v-model="staff.TIME_CONTACT_ID" label="ระยะเวลาจ้างในสัญญา" :items="refTimeContact"></v-select>
+              <v-select v-model="TIME_CONTACT_ID" label="ระยะเวลาจ้างในสัญญา" :items="refTimeContact"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select v-model="staff.BUDGET_ID" label="ประเภทเงินจ้าง" :items="refBudget"></v-select>
+              <v-select v-model="BUDGET_ID" label="ประเภทเงินจ้าง" :items="refBudget"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select v-model="staff.ADMIN_POSITION_ID" label="ตำแหน่งบริหาร" :items="refAdmin"></v-select>
+              <v-select v-model="ADMIN_POSITION_ID" label="ตำแหน่งบริหาร" :items="refAdmin"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="staff.POSITION_WORK" label="ชื่อตำแหน่ง"></v-text-field>
+              <v-text-field v-model="POSITION_WORK" label="ชื่อตำแหน่ง"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select v-model="staff.POSITION_ID" label="ระดับตำแหน่ง" :items="refPosition"></v-select>
+              <v-select v-model="POSITION_ID" label="ระดับตำแหน่ง" :items="refPosition"></v-select>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete :items="refFac" v-model="staff.DEPARTMENT_ID" label="คณะ / หน่วยงานที่สังกัด"></v-autocomplete>
+              <v-autocomplete :items="refFac" v-model="DEPARTMENT_ID" label="คณะ / หน่วยงานที่สังกัด"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="staff.DATE_INWORK" label="วันบรรจุ" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="DATE_INWORK" label="วันบรรจุ" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="staff.DATE_START_THIS_U" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="DATE_START_THIS_U" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete :items="refISCED" v-model="staff.SPECIAL_NAME_ID" label="สาขาวิชาที่เชี่ยวชาญ"></v-autocomplete>
+              <v-autocomplete :items="refISCED" v-model="SPECIAL_NAME_ID" label="สาขาวิชาที่เชี่ยวชาญ"></v-autocomplete>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete :items="refISCED" v-model="staff.TEACH_ISCED_ID" label="สาขาวิชาที่สอน"></v-autocomplete>
+              <v-autocomplete :items="refISCED" v-model="TEACH_ISCED_ID" label="สาขาวิชาที่สอน"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select  v-model="staff.TEACH_SUBJECTGROUP_ID" label="หมวดวิชาที่สอน" :items="[{value: '01', text: 'หมวดศึกษาทั่วไป'},{value: '02', text: 'หมวดวิชาเฉพาะ'},{value: '03', text: 'หมวดวิชาเลือก'},{value: '-', text: 'ไม่มีชั่วโมงสอน'}]"></v-select>
+              <v-select  v-model="TEACH_SUBJECTGROUP_ID" label="หมวดวิชาที่สอน" :items="[{value: '01', text: 'หมวดศึกษาทั่วไป'},{value: '02', text: 'หมวดวิชาเฉพาะ'},{value: '03', text: 'หมวดวิชาเลือก'},{value: '-', text: 'ไม่มีชั่วโมงสอน'}]"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select  :items="refDeform" v-model="staff.DEFROM_ID" label="ความพิการ"></v-select>
+              <v-select  :items="refDeform" v-model="DEFROM_ID" label="ความพิการ"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select  v-model="staff.INCOME_ID" label="ช่วงรายได้ต่อเดือน" :items="[{value: '01',text: '≤ 15,000'},{value: '02',text: '15,001 - 30,000'},{value: '03',text: '30,001 - 45,000'},{value: '04',text: '45,001 - 60,000'},{value: '05',text: '> 60,000'}]"></v-select>
+              <v-select  v-model="INCOME_ID" label="ช่วงรายได้ต่อเดือน" :items="[{value: '01',text: '≤ 15,000'},{value: '02',text: '15,001 - 30,000'},{value: '03',text: '30,001 - 45,000'},{value: '04',text: '45,001 - 60,000'},{value: '05',text: '> 60,000'}]"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :items="refReligion" v-model="staff.RELIGION_ID" label="ศาสนา"></v-select>
+              <v-select :items="refReligion" v-model="RELIGION_ID" label="ศาสนา"></v-select>
             </v-flex>
             <v-flex xs12>
-              <v-select :items="refMovmentType" v-model="staff.MOVEMENT_TYPE_ID" label="ประเภทการดำรงรับตำแหน่ง"></v-select>
+              <v-select :items="refMovmentType" v-model="MOVEMENT_TYPE_ID" label="ประเภทการดำรงรับตำแหน่ง"></v-select>
             </v-flex>
             <v-flex xs12>
-              <v-text-field v-model="staff.DECORATION" label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"></v-text-field>
+              <v-text-field v-model="DECORATION" label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="staff.PASSPORT_STARTDATE" label="วันที่ออก Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="PASSPORT_STARTDATE" label="วันที่ออก Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="staff.PASSPORT_ENDDATE" label="วันหมดอายุ Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="PASSPORT_ENDDATE" label="วันหมดอายุ Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :items="[ { value: 'Y', text: 'เล่มเดิม' },{ value: 'N', text: 'เล่มใหม่' } ]" v-model="staff.PASSPORT_STATUS" label="สถานะ Passport"></v-select>
+              <v-select :items="[ { value: 'Y', text: 'เล่มเดิม' },{ value: 'N', text: 'เล่มใหม่' } ]" v-model="PASSPORT_STATUS" label="สถานะ Passport"></v-select>
             </v-flex>
           </v-layout>
         </v-container>
@@ -182,7 +182,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
+        <v-btn color="blue darken-1" flat @click="clear">Close</v-btn>
         <v-btn color="blue darken-1" flat @click="dialog = false">Save</v-btn>
       </v-card-actions>
     </v-card>
@@ -217,8 +217,7 @@ import refReligion from '../json/refReligion'
 import refISCED from '../json/refISCED'
 import refFac from '../json/refFac'
 import refUniv from '../json/refUniv'
-import prov from '../json/refProvince'
-import distr from '../json/refDistrict'
+
 export default {
   name: 'staffMgr',
   components: { fileUpload , Simplert },
@@ -276,52 +275,87 @@ export default {
         value: 'cmd',
         sortable: false
     }],
-      staff: {
-        CITIZEN_ID: null,
-        PREFIX_NAME_ID: null,
-        STF_FNAME: null,
-        STF_MNAME: '-',
-        STF_LNAME: null,
-        GENDER_ID: null,
-        BIRTHDAY: null,
-        HOMEADD: null,
-        MOO: null,
-        STREET: null,
-        SUB_DISTRICT_ID: null,
-        TELEPHONE: null,
-        ZIPCODE: null,
-        NATION_ID: null,
-        STAFFTYPE_ID: null,
-        TIME_CONTACT_ID: null,
-        BUDGET_ID: null,
-        SUBSTAFFTYPE_ID: null,
-        ADMIN_POSITION_ID: null,
-        POSITION_ID: null,
-        POSITION_WORK: null,
-        DEPARTMENT_ID: null,
-        DATE_INWORK: null,
-        DATE_START_THIS_U: null,
-        SPECIAL_NAME_ID: null,
-        TEACH_ISCED_ID: null,
-        TEACH_SUBJECTGROUP_ID: null,
-        DEFROM_ID: null,
-        INCOME_ID: null,
-        RELIGION_ID: null,
-        MOVEMENT_TYPE_ID: null,
-        MOVEMENT_DATE: null,
-        DECORATION: null,
-        PASSPORT_STARTDATE: null,
-        PASSPORT_ENDDATE: null,
-        PASSPORT_STATUS: null
-      },
-      prov: prov,
-      distr: distr
+      CITIZEN_ID: null,
+      PREFIX_NAME_ID: null,
+      STF_FNAME: null,
+      STF_MNAME: '-',
+      STF_LNAME: null,
+      GENDER_ID: null,
+      BIRTHDAY: null,
+      HOMEADD: null,
+      MOO: null,
+      STREET: null,
+      SUB_DISTRICT_ID: null,
+      TELEPHONE: null,
+      ZIPCODE: null,
+      NATION_ID: null,
+      STAFFTYPE_ID: null,
+      TIME_CONTACT_ID: null,
+      BUDGET_ID: null,
+      SUBSTAFFTYPE_ID: null,
+      ADMIN_POSITION_ID: null,
+      POSITION_ID: null,
+      POSITION_WORK: null,
+      DEPARTMENT_ID: null,
+      DATE_INWORK: null,
+      DATE_START_THIS_U: null,
+      SPECIAL_NAME_ID: null,
+      TEACH_ISCED_ID: null,
+      TEACH_SUBJECTGROUP_ID: null,
+      DEFROM_ID: null,
+      INCOME_ID: null,
+      RELIGION_ID: null,
+      MOVEMENT_TYPE_ID: null,
+      MOVEMENT_DATE: null,
+      DECORATION: null,
+      PASSPORT_STARTDATE: null,
+      PASSPORT_ENDDATE: null,
+      PASSPORT_STATUS: null
     }
   },
   methods: {
-    add () {
-      this.clear()
+    create () {
       this.dialog = true
+    },
+    update (obj) {
+      this.CITIZEN_ID = obj.CITIZEN_ID
+      this.PREFIX_NAME_ID = obj.PREFIX_NAME_ID
+      this.STF_FNAME = obj.STF_FNAME
+      this.STF_MNAME = '-'
+      this.STF_LNAME = obj.STF_LNAME
+      this.GENDER_ID = obj.GENDER_ID
+      this.BIRTHDAY = this.convToCE(obj.BIRTHDAY)
+      this.HOMEADD = obj.HOMEADD
+      this.MOO = obj.MOO
+      this.STREET = obj.STREET
+      this.SUB_DISTRICT_ID = obj.SUB_DISTRICT_ID
+      this.TELEPHONE = obj.TELEPHONE
+      this.ZIPCODE = obj.ZIPCODE
+      this.NATION_ID = obj.NATION_ID
+      this.STAFFTYPE_ID = obj.STAFFTYPE_ID
+      this.TIME_CONTACT_ID = obj.TIME_CONTACT_ID
+      this.BUDGET_ID = obj.BUDGET_ID
+      this.SUBSTAFFTYPE_ID = obj.SUBSTAFFTYPE_ID
+      this.ADMIN_POSITION_ID = obj.ADMIN_POSITION_ID
+      this.POSITION_ID = obj.POSITION_ID
+      this.POSITION_WORK = obj.POSITION_WORK
+      this.DEPARTMENT_ID = obj.DEPARTMENT_ID
+      this.DATE_INWORK = this.convToCE(obj.DATE_INWORK)
+      this.DATE_START_THIS_U = this.convToCE(obj.DATE_START_THIS_U)
+      this.SPECIAL_NAME_ID = obj.SPECIAL_NAME_ID
+      this.TEACH_ISCED_ID = obj.TEACH_ISCED_ID
+      this.TEACH_SUBJECTGROUP_ID = obj.TEACH_SUBJECTGROUP_ID
+      this.DEFROM_ID = obj.DEFROM_ID
+      this.INCOME_ID = obj.INCOME_ID
+      this.RELIGION_ID = obj.RELIGION_ID
+      this.MOVEMENT_TYPE_ID = obj.MOVEMENT_TYPE_ID
+      this.MOVEMENT_DATE = this.convToCE(obj.MOVEMENT_DATE)
+      this.DECORATION = obj.DECORATION
+      this.PASSPORT_STARTDATE = this.convToCE(obj.PASSPORT_STARTDATE)
+      this.PASSPORT_ENDDATE = this.convToCE(obj.PASSPORT_ENDDATE)
+      this.PASSPORT_STATUS = obj.PASSPORT_STATUS
+      this.dialog = true
+      console.log(this.BIRTHDAY)
     },
     remove (index) {
       const obj = {
@@ -338,61 +372,37 @@ export default {
       }
       this.$refs.simplert.openSimplert(obj)
     },
-    clear () {
-      this.staff = {
-        CITIZEN_ID: null,
-        PREFIX_NAME_ID: null,
-        STF_FNAME: null,
-        STF_MNAME: '-',
-        STF_LNAME: null,
-        GENDER_ID: null,
-        BIRTHDAY: null,
-        HOMEADD: null,
-        MOO: null,
-        STREET: null,
-        SUB_DISTRICT_ID: null,
-        TELEPHONE: null,
-        ZIPCODE: null,
-        NATION_ID: null,
-        STAFFTYPE_ID: null,
-        TIME_CONTACT_ID: null,
-        BUDGET_ID: null,
-        SUBSTAFFTYPE_ID: null,
-        ADMIN_POSITION_ID: null,
-        POSITION_ID: null,
-        POSITION_WORK: null,
-        DEPARTMENT_ID: null,
-        DATE_INWORK: null,
-        DATE_START_THIS_U: null,
-        SPECIAL_NAME_ID: null,
-        TEACH_ISCED_ID: null,
-        TEACH_SUBJECTGROUP_ID: null,
-        DEFROM_ID: null,
-        INCOME_ID: null,
-        RELIGION_ID: null,
-        MOVEMENT_TYPE_ID: null,
-        MOVEMENT_DATE: null,
-        DECORATION: null,
-        PASSPORT_STARTDATE: null,
-        PASSPORT_ENDDATE: null,
-        PASSPORT_STATUS: null
+    save () {
+      if (!this.CITIZEN_ID) {
+        //add
+        const staff = {
+          YEAR: this.YEAR,
+          UNIV_ID: this.UNIV_ID,
+          CITIZEN_ID: this.CITIZEN_ID,
+          PREFIX_NAME_ID: this.PREFIX_NAME_ID,
+          STF_FNAME: this.STF_FNAME,
+          STF_MNAME: this.STF_MNAME,
+          STF_LNAME: this.STF_LNAME,
+          GENDER_ID: this.GENDER_ID,
+          BIRTHDAY: this.BIRTHDAY,
+          HOMEADD: this.HOMEADD,
+          MOO: this.MOO,
+          STREET: this.STREET,
+          SUB_DISTRICT_ID: this.SUB_DISTRICT_ID
+        }
+      } else {
+        //update
       }
     },
-    sortJSON () {
-     const cc =  this.refSubDistrict.map((sd) => {
-        var did = sd.value.substring(0, 2)
-        return {
-          value: sd.value,
-          text: sd.text + ' ' + (this.prov.find((d) => {
-            return d.value == did
-          })).text
-        }
-      })
-      console.log(JSON.stringify(cc))
+    clear () {
+      this.$refs.form.reset()
+      this.STF_MNAME = '-'
+      this.dialog = false
+    },
+    convToCE (val) {
+      const [y, m, d] = val.split('-')
+      return (parseInt(y) - 543) + '-' + m + '-' +d
     }
-  },
-  mounted () {
-    // this.sortJSON()
   }
 }
 </script>
