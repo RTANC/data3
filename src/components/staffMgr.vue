@@ -67,7 +67,7 @@
           <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field label="เลขประจำตัวประชาชน" mask="#-####-#####-##-#" v-model="CITIZEN_ID"></v-text-field>
+              <v-text-field label="เลขประจำตัวประชาชน" mask="#-####-#####-##-#" v-model="CITIZEN_ID" return-masked-value></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md2>
               <v-select :items="refRank" v-model="PREFIX_NAME_ID" label="ยศ"></v-select>
@@ -85,13 +85,13 @@
               </v-radio-group>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field label="วันเกิด" v-model="BIRTHDAY" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field label="วันเกิด" v-model="BIRTHDAY" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field label="บ้านเลขที่" v-model="HOMEADD"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md2>
-              <v-text-field label="หมู่ที่" type="number" v-model="MOO"></v-text-field>
+              <v-text-field label="หมู่ที่" v-model="MOO"></v-text-field>
             </v-flex>
             <v-flex xs12 md6>
               <v-text-field label="ถนน"  v-model="STREET"></v-text-field>
@@ -106,7 +106,7 @@
               <v-text-field label="รหัสไปรษณีย์"  v-model="ZIPCODE"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-autocomplete label="สัญชาติ" v-model="NATION_ID"></v-autocomplete>
+              <v-autocomplete label="สัญชาติ" v-model="NATION_ID" :items="refNation"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-select v-model="STAFFTYPE_ID" label="ประเภทบุคลากร" :items="[{value: '1', text: 'ข้าราชการ'},{value: '2', text: 'พนักงานมหาวิทยาลัย'},{value: '3', text: 'ลูกจ้างประจำ'},{value: '4', text: 'ลูกจ้างชั่วคราว'},{value: '5', text: 'พนักงานราชการ'}]"></v-select>
@@ -137,10 +137,10 @@
               <v-autocomplete :items="refFac" v-model="DEPARTMENT_ID" label="คณะ / หน่วยงานที่สังกัด"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="DATE_INWORK" label="วันบรรจุ" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="DATE_INWORK" label="วันบรรจุ" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="DATE_START_THIS_U" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="DATE_START_THIS_U" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-autocomplete :items="refISCED" v-model="SPECIAL_NAME_ID" label="สาขาวิชาที่เชี่ยวชาญ"></v-autocomplete>
@@ -167,10 +167,10 @@
               <v-text-field v-model="DECORATION" label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="PASSPORT_STARTDATE" label="วันที่ออก Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="PASSPORT_STARTDATE" label="วันที่ออก Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="PASSPORT_ENDDATE" label="วันหมดอายุ Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required></v-text-field>
+              <v-text-field v-model="PASSPORT_ENDDATE" label="วันหมดอายุ Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-select :items="[ { value: 'Y', text: 'เล่มเดิม' },{ value: 'N', text: 'เล่มใหม่' } ]" v-model="PASSPORT_STATUS" label="สถานะ Passport"></v-select>
@@ -324,7 +324,7 @@ export default {
       this.STF_MNAME = '-'
       this.STF_LNAME = obj.STF_LNAME
       this.GENDER_ID = obj.GENDER_ID
-      this.BIRTHDAY = this.convToCE(obj.BIRTHDAY)
+      this.BIRTHDAY = obj.BIRTHDAY
       this.HOMEADD = obj.HOMEADD
       this.MOO = obj.MOO
       this.STREET = obj.STREET
@@ -340,8 +340,8 @@ export default {
       this.POSITION_ID = obj.POSITION_ID
       this.POSITION_WORK = obj.POSITION_WORK
       this.DEPARTMENT_ID = obj.DEPARTMENT_ID
-      this.DATE_INWORK = this.convToCE(obj.DATE_INWORK)
-      this.DATE_START_THIS_U = this.convToCE(obj.DATE_START_THIS_U)
+      this.DATE_INWORK = obj.DATE_INWORK
+      this.DATE_START_THIS_U = obj.DATE_START_THIS_U
       this.SPECIAL_NAME_ID = obj.SPECIAL_NAME_ID
       this.TEACH_ISCED_ID = obj.TEACH_ISCED_ID
       this.TEACH_SUBJECTGROUP_ID = obj.TEACH_SUBJECTGROUP_ID
@@ -349,13 +349,12 @@ export default {
       this.INCOME_ID = obj.INCOME_ID
       this.RELIGION_ID = obj.RELIGION_ID
       this.MOVEMENT_TYPE_ID = obj.MOVEMENT_TYPE_ID
-      this.MOVEMENT_DATE = this.convToCE(obj.MOVEMENT_DATE)
+      this.MOVEMENT_DATE = obj.MOVEMENT_DATE
       this.DECORATION = obj.DECORATION
-      this.PASSPORT_STARTDATE = this.convToCE(obj.PASSPORT_STARTDATE)
-      this.PASSPORT_ENDDATE = this.convToCE(obj.PASSPORT_ENDDATE)
+      this.PASSPORT_STARTDATE = obj.PASSPORT_STARTDATE
+      this.PASSPORT_ENDDATE = obj.PASSPORT_ENDDATE
       this.PASSPORT_STATUS = obj.PASSPORT_STATUS
       this.dialog = true
-      console.log(this.BIRTHDAY)
     },
     remove (index) {
       const obj = {
@@ -399,9 +398,8 @@ export default {
       this.STF_MNAME = '-'
       this.dialog = false
     },
-    convToCE (val) {
-      const [y, m, d] = val.split('-')
-      return (parseInt(y) - 543) + '-' + m + '-' +d
+    dateValidate (v) {
+      return /\d{4}-{1}\d{2}-{1}\d{2}/g.test(v) || 'รูปแบบไม่ตรงตามที่กำหนด'
     }
   }
 }
