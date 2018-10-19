@@ -17,8 +17,8 @@
           <td class="text-xs-left">{{ props.item.POSITION_WORK }}</td>
           <td class="text-xs-center">
             <v-btn color="success" :to="{ name: 'staffGradMgr', params: { id: props.item.CITIZEN_ID } }" icon flat><v-icon>school</v-icon></v-btn>
-            <v-btn color="info" icon flat @click="update(props.item)"><v-icon>create</v-icon></v-btn>
-            <v-btn color="red" dark @click="remove(props.index, props.item.CITIZEN_ID)" icon flat><v-icon>delete</v-icon></v-btn>
+            <v-btn color="info" icon flat @click="update(props.item);"><v-icon>create</v-icon></v-btn>
+            <v-btn color="red" dark @click="remove(props.index, props.item.CITIZEN_ID);" icon flat><v-icon>delete</v-icon></v-btn>
           </td>
         </template>
       </v-data-table>
@@ -372,7 +372,15 @@ export default {
       this.$refs.simplert.openSimplert(obj)
     },
     save () {
-      const staff = {
+      if (!this.CITIZEN_ID) {
+        //add 
+        this.$store.dispatch('addStaff', staff)
+      } else {
+        //update
+        const i = this.$store.getters.staffs.findIndex(e => {
+          return e.CITIZEN_ID === this.CITIZEN_ID
+        })
+        this.$store.dispatch('editStaff', {index: i, staff: {
           YEAR: this.YEAR,
           UNIV_ID: this.UNIV_ID,
           CITIZEN_ID: this.CITIZEN_ID,
@@ -411,16 +419,7 @@ export default {
           PASSPORT_STARTDATE: this.PASSPORT_STARTDATE,
           PASSPORT_ENDDATE: this.PASSPORT_ENDDATE,
           PASSPORT_STATUS: this.PASSPORT_STATUS
-      }
-      if (!this.CITIZEN_ID) {
-        //add 
-        this.$store.dispatch('addStaff', staff)
-      } else {
-        //update
-        const i = this.$store.getters.staffs.findIndex(e => {
-          return e.CITIZEN_ID == staff.CITIZEN_ID
-        })
-        this.$store.dispatch('editStaff', {index: i, staff: staff})
+      }})
       }
       this.clear()
     },

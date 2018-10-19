@@ -9,12 +9,8 @@ export const store = new Vuex.Store({
         staffGrads: []
     },
     getters: {
-        staffs: state => {
-            return state.staffs
-        },
-        staffGrads: (state) => {
-            return state.staffGrads
-        },
+        staffs: state => state.staffs,
+        staffGrads: state => state.staffGrads,
         staffGradById: state => id => state.staffGrads.filter(x => x.CITIZEN_ID === id)
     },
     mutations: {
@@ -28,7 +24,8 @@ export const store = new Vuex.Store({
             state.push(staff)
         },
         editStaff: (state, payload) => {
-            state.staffs[payload.index] = payload.staff
+            state.staffs[payload.index].CITIZEN_ID = payload.staff.CITIZEN_ID
+            state.staffs[payload.index].STF_FNAME = payload.staff.STF_FNAME
         },
         removeStaff: (state, payload) => {
             state.staffs.splice(payload.index, 1)
