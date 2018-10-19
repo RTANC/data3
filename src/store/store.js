@@ -30,8 +30,11 @@ export const store = new Vuex.Store({
         editStaff: (state, payload) => {
             state.staffs[payload.index] = payload.staff
         },
-        removeStaff: (state, index) => {
-            state.staffs.splice(index, 1)
+        removeStaff: (state, payload) => {
+            state.staffs.splice(payload.index, 1)
+            state.staffGrads = state.staffGrads.filter(staffGrad => {
+                return staffGrad.CITIZEN_ID != payload.key
+            })
         },
         addStaffGrad: (state, staffGrad) => {
             state.staffGrads.push(staffGrad)
@@ -56,8 +59,8 @@ export const store = new Vuex.Store({
         editStaff: (context, payload) => {
             context.commit('editStaff', payload)
         },
-        removeStaff: (context, index) => {
-            context.commit('removeStaff', index)
+        removeStaff: (context, payload) => {
+            context.commit('removeStaff', payload)
         },
         addStaffGrad: (context, staffGrad) => {
             context.commit('addStaffGrad', staffGrad)

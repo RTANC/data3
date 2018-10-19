@@ -18,7 +18,7 @@
           <td class="text-xs-center">
             <v-btn color="success" :to="{ name: 'staffGradMgr', params: { id: props.item.CITIZEN_ID } }" icon flat><v-icon>school</v-icon></v-btn>
             <v-btn color="info" icon flat @click="update(props.item)"><v-icon>create</v-icon></v-btn>
-            <v-btn color="red" dark @click="remove(props.index)" icon flat><v-icon>delete</v-icon></v-btn>
+            <v-btn color="red" dark @click="remove(props.index, props.item.CITIZEN_ID)" icon flat><v-icon>delete</v-icon></v-btn>
           </td>
         </template>
       </v-data-table>
@@ -356,7 +356,7 @@ export default {
       this.PASSPORT_STATUS = obj.PASSPORT_STATUS
       this.dialog = true
     },
-    remove (index) {
+    remove (index, key) {
       const obj = {
         title: 'คำเตือน',
         message: 'ท่านยืนยันที่จะลบข้อมูลดังกล่าว ใช่ หรือ ไม่',
@@ -364,7 +364,7 @@ export default {
         useConfirmBtn: true,
         onConfirm: () =>  {
           index = ((this.pagination.page - 1) * this.pagination.rowsPerPage) + index
-          this.$store.dispatch('removeStaff', index)
+          this.$store.dispatch('removeStaff', {index: index,key: key})
         },
         customConfirmBtnText: 'ใช่',
         customCloseBtnText: 'ไม่'
@@ -372,9 +372,7 @@ export default {
       this.$refs.simplert.openSimplert(obj)
     },
     save () {
-      if (!this.CITIZEN_ID) {
-        //add
-        const staff = {
+      const staff = {
           YEAR: this.YEAR,
           UNIV_ID: this.UNIV_ID,
           CITIZEN_ID: this.CITIZEN_ID,
@@ -387,14 +385,48 @@ export default {
           HOMEADD: this.HOMEADD,
           MOO: this.MOO,
           STREET: this.STREET,
-          SUB_DISTRICT_ID: this.SUB_DISTRICT_ID
-        }
+          SUB_DISTRICT_ID: this.SUB_DISTRICT_ID,
+          TELEPHONE: this.TELEPHONE,
+          ZIPCODE: this.ZIPCODE,
+          NATION_ID: this.NATION_ID,
+          STAFFTYPE_ID: this.STAFFTYPE_ID,
+          TIME_CONTACT_ID: this.TIME_CONTACT_ID,
+          BUDGET_ID: this.BUDGET_ID,
+          SUBSTAFFTYPE_ID: this.SUBSTAFFTYPE_ID,
+          ADMIN_POSITION_ID: this.ADMIN_POSITION_ID,
+          POSITION_ID: this.POSITION_ID,
+          POSITION_WORK: this.POSITION_WORK,
+          DEPARTMENT_ID: this.DEPARTMENT_ID,
+          DATE_INWORK: this.DATE_INWORK,
+          DATE_START_THIS_U: this.DATE_START_THIS_U,
+          SPECIAL_NAME_ID: this.SPECIAL_NAME_ID,
+          TEACH_ISCED_ID: this.TEACH_ISCED_ID,
+          TEACH_SUBJECTGROUP_ID: this.TEACH_SUBJECTGROUP_ID,
+          DEFROM_ID: this.DEFROM_ID,
+          INCOME_ID: this.INCOME_ID,
+          RELIGION_ID: this.RELIGION_ID,
+          MOVEMENT_TYPE_ID: this.MOVEMENT_TYPE_ID,
+          MOVEMENT_DATE: this.MOVEMENT_DATE,
+          DECORATION: this.DECORATION,
+          PASSPORT_STARTDATE: this.PASSPORT_STARTDATE,
+          PASSPORT_ENDDATE: this.PASSPORT_ENDDATE,
+          PASSPORT_STATUS: this.PASSPORT_STATUS
+      }
+      if (!this.CITIZEN_ID) {
+        //add 
+        this.$store.dispatch('addStaff', staff)
       } else {
         //update
+        const i = this.$store.getters.staffs.findIndex(e => {
+          return e.CITIZEN_ID == staff.CITIZEN_ID
+        })
+
+        this.$store.dispatch('editStaff', {index: i, staff: staff})
       }
     },
     clear () {
       this.$refs.form.reset()
+      this.CITIZEN_ID = null
       this.STF_MNAME = '-'
       this.dialog = false
     },
