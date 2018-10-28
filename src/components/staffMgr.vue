@@ -60,7 +60,7 @@
       <v-dialog v-model="dialog" persistent max-width="500px">
     <v-card>
       <v-card-title>
-        <span class="headline">User Profile</span>
+        <span class="headline">ข้อมูลบุคลากร</span>
       </v-card-title>
       <v-card-text>
         <v-form ref="form" v-model="valid">
@@ -178,12 +178,12 @@
           </v-layout>
         </v-container>
         </v-form>
-        <small class="error">*จำเป็น</small>
+        <small>*จำเป็น</small>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" flat @click="clear">Close</v-btn>
-        <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+        <v-btn color="red darken-1" flat @click="clear">ยกเลิก</v-btn>
+        <v-btn color="blue darken-1" flat @click="save" :disabled="!valid">บันทึก</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -436,6 +436,24 @@ export default {
     },
     checkNull (v) {
       return !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้'
+    }
+  },
+  watch : {
+    SUBSTAFFTYPE_ID (v) {
+      if (v == 2) {
+        this.TEACH_ISCED_ID = '-----------'
+        this.TEACH_SUBJECTGROUP_ID = '-'
+      } else {
+        this.TEACH_ISCED_ID = null
+        this.TEACH_SUBJECTGROUP_ID = null
+      }
+    },
+    NATION_ID (v) {
+      if (v == 'TH') {
+        this.PASSPORT_STATUS = '-'
+      } else {
+        this.PASSPORT_STATUS = null
+      }
     }
   }
 }

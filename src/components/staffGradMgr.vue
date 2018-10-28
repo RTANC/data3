@@ -43,8 +43,8 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" flat @click="clear">Close</v-btn>
-                            <v-btn color="blue darken-1" flat @click="save" :disabled="!valid">Save</v-btn>
+                            <v-btn color="red darken-1" flat @click="clear">ยกเลิก</v-btn>
+                            <v-btn color="blue darken-1" flat @click="save" :disabled="!valid">บันทึก</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
