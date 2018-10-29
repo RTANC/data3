@@ -4,6 +4,8 @@
     <v-flex xs12>
       <v-card>
       <v-toolbar dense card class="elevation-1">
+        <v-btn color="success">บันทึก</v-btn>
+        <v-spacer></v-spacer>
         <v-toolbar-title class="heading">ข้อมูลทั่วไป</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn color="primary" @click="create">เพิ่ม</v-btn>
@@ -57,7 +59,7 @@
       </v-dialog>
     </v-flex>
     <v-flex xs12>
-      <v-dialog v-model="dialog" persistent max-width="500px">
+      <v-dialog v-model="dialog" persistent max-width="600px">
     <v-card>
       <v-card-title>
         <span class="headline">ข้อมูลบุคลากร</span>
@@ -67,28 +69,28 @@
           <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field :rules="[checkNull]" label="เลขประจำตัวประชาชน" mask="#-####-#####-##-#" v-model="CITIZEN_ID" required></v-text-field>
+              <v-text-field :rules="[checkNull, v => v.length <= 13 || 'เลขบัตรประชาชนมี 13 หลัก']" label="เลขประจำตัวประชาชน"  v-model="CITIZEN_ID"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md2>
-              <v-select :rules="[checkNull]" :items="refRank" v-model="PREFIX_NAME_ID" label="ยศ" required></v-select>
+              <v-select :rules="[checkNull]" :items="refRank" v-model="PREFIX_NAME_ID" label="ยศ"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field :rules="[checkNull]" label="ชื่อ" v-model="STF_FNAME" required></v-text-field>
+              <v-text-field :rules="[checkNull]" label="ชื่อ" v-model="STF_FNAME"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field :rules="[checkNull]" label="นามสกุล" v-model="STF_LNAME" required></v-text-field>
+              <v-text-field :rules="[checkNull]" label="นามสกุล" v-model="STF_LNAME"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md7>
-              <v-radio-group v-model="GENDER_ID" row label="เพศ" required>
+              <v-radio-group v-model="GENDER_ID" row label="เพศ">
                 <v-radio label="ชาย" value="1" ></v-radio>
                 <v-radio label="หญิง" value="2"></v-radio>
               </v-radio-group>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field :rules="[checkNull]" label="วันเกิด" v-model="BIRTHDAY" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
+              <v-text-field :rules="[checkNull, checkDate]" label="วันเกิด" v-model="BIRTHDAY" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md4>
-              <v-text-field :rules="[checkNull]" label="บ้านเลขที่" v-model="HOMEADD" required></v-text-field>
+              <v-text-field :rules="[checkNull]" label="บ้านเลขที่" v-model="HOMEADD"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md2>
               <v-text-field  label="หมู่ที่" v-model="MOO"></v-text-field>
@@ -97,88 +99,88 @@
               <v-text-field  label="ถนน"  v-model="STREET"></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete :rules="[checkNull]" label="ตำบล" v-model="SUB_DISTRICT_ID" :items="refSubDistrict" required></v-autocomplete>
+              <v-autocomplete :rules="[checkNull]" label="ตำบล" v-model="SUB_DISTRICT_ID" :items="refSubDistrict"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-text-field label="เบอร์โทรศัพท์ (ที่ทำงาน)"  v-model="TELEPHONE"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkNull]" label="รหัสไปรษณีย์" mask="#####"  v-model="ZIPCODE" required></v-text-field>
+              <v-text-field :rules="[checkNull]" label="รหัสไปรษณีย์" mask="#####"  v-model="ZIPCODE"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-autocomplete :rules="[checkNull]" label="สัญชาติ" v-model="NATION_ID" :items="refNation" required></v-autocomplete>
+              <v-autocomplete :rules="[checkNull]" label="สัญชาติ" v-model="NATION_ID" :items="refNation"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]" v-model="STAFFTYPE_ID" label="ประเภทบุคลากร" :items="[{value: '1', text: 'ข้าราชการ'},{value: '2', text: 'พนักงานมหาวิทยาลัย'},{value: '3', text: 'ลูกจ้างประจำ'},{value: '4', text: 'ลูกจ้างชั่วคราว'},{value: '5', text: 'พนักงานราชการ'}]" required></v-select>
+              <v-select :rules="[checkNull]" v-model="STAFFTYPE_ID" label="ประเภทบุคลากร" :items="[{value: '1', text: 'ข้าราชการ'},{value: '2', text: 'พนักงานมหาวิทยาลัย'},{value: '3', text: 'ลูกจ้างประจำ'},{value: '4', text: 'ลูกจ้างชั่วคราว'},{value: '5', text: 'พนักงานราชการ'}]"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-radio-group v-model="SUBSTAFFTYPE_ID" row required>
+              <v-radio-group v-model="SUBSTAFFTYPE_ID" row>
                 <v-radio label="มีชั่วโมงสอน" value="1" ></v-radio>
                 <v-radio label="ไม่มีชั่วโมงสอน" value="2"></v-radio>
                 <v-radio label="มีชั่วโมงช่วยสอน" value="3"></v-radio>
               </v-radio-group>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]" v-model="TIME_CONTACT_ID" label="ระยะเวลาจ้างในสัญญา" :items="refTimeContact" required></v-select>
+              <v-select :rules="[checkNull]" v-model="TIME_CONTACT_ID" label="ระยะเวลาจ้างในสัญญา" :items="refTimeContact"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]" v-model="BUDGET_ID" label="ประเภทเงินจ้าง" :items="refBudget" required></v-select>
+              <v-select :rules="[checkNull]" v-model="BUDGET_ID" label="ประเภทเงินจ้าง" :items="refBudget"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]" v-model="ADMIN_POSITION_ID" label="ตำแหน่งบริหาร" :items="refAdmin" required></v-select>
+              <v-select :rules="[checkNull]" v-model="ADMIN_POSITION_ID" label="ตำแหน่งบริหาร" :items="refAdmin"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkNull]" v-model="POSITION_WORK" label="ชื่อตำแหน่ง" required></v-text-field>
+              <v-text-field :rules="[checkNull]" v-model="POSITION_WORK" label="ชื่อตำแหน่ง"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]" v-model="POSITION_ID" label="ระดับตำแหน่ง" :items="refPosition" required></v-select>
+              <v-select :rules="[checkNull]" v-model="POSITION_ID" label="ระดับตำแหน่ง" :items="refPosition"></v-select>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete :rules="[checkNull]" :items="refFac" v-model="DEPARTMENT_ID" label="คณะ / หน่วยงานที่สังกัด" required></v-autocomplete>
+              <v-autocomplete :rules="[checkNull]" :items="refFac" v-model="DEPARTMENT_ID" label="คณะ / หน่วยงานที่สังกัด"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkNull]" v-model="DATE_INWORK" label="วันบรรจุ" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
+              <v-text-field :rules="[checkNull, checkDate]" v-model="DATE_INWORK" label="วันบรรจุ" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkNull]" v-model="DATE_START_THIS_U" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
+              <v-text-field :rules="[checkNull, checkDate]" v-model="DATE_START_THIS_U" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete :rules="[checkNull]" :items="refISCED" v-model="SPECIAL_NAME_ID" label="สาขาวิชาที่เชี่ยวชาญ" required></v-autocomplete>
+              <v-autocomplete :rules="[checkNull]" :items="refISCED" v-model="SPECIAL_NAME_ID" label="สาขาวิชาที่เชี่ยวชาญ"></v-autocomplete>
             </v-flex>
             <v-flex xs12>
-              <v-autocomplete :rules="[checkNull]" :items="refISCED" v-model="TEACH_ISCED_ID" label="สาขาวิชาที่สอน" required></v-autocomplete>
+              <v-autocomplete :rules="[checkNull]" :items="refISCED" v-model="TEACH_ISCED_ID" label="สาขาวิชาที่สอน"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]"  v-model="TEACH_SUBJECTGROUP_ID" label="หมวดวิชาที่สอน" :items="[{value: '01', text: 'หมวดศึกษาทั่วไป'},{value: '02', text: 'หมวดวิชาเฉพาะ'},{value: '03', text: 'หมวดวิชาเลือก'},{value: '-', text: 'ไม่มีชั่วโมงสอน'}]" required></v-select>
+              <v-select :rules="[checkNull]"  v-model="TEACH_SUBJECTGROUP_ID" label="หมวดวิชาที่สอน" :items="[{value: '01', text: 'หมวดศึกษาทั่วไป'},{value: '02', text: 'หมวดวิชาเฉพาะ'},{value: '03', text: 'หมวดวิชาเลือก'},{value: '-', text: 'ไม่มีชั่วโมงสอน'}]"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-select :rules="[checkNull]" :items="refDeform" v-model="DEFROM_ID" label="ความพิการ"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]" v-model="INCOME_ID" label="ช่วงรายได้ต่อเดือน" :items="[{value: '01',text: '≤ 15,000'},{value: '02',text: '15,001 - 30,000'},{value: '03',text: '30,001 - 45,000'},{value: '04',text: '45,001 - 60,000'},{value: '05',text: '> 60,000'}]" required></v-select>
+              <v-select :rules="[checkNull]" v-model="INCOME_ID" label="ช่วงรายได้ต่อเดือน" :items="[{value: '01',text: '≤ 15,000'},{value: '02',text: '15,001 - 30,000'},{value: '03',text: '30,001 - 45,000'},{value: '04',text: '45,001 - 60,000'},{value: '05',text: '> 60,000'}]"></v-select>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :rules="[checkNull]" :items="refReligion" v-model="RELIGION_ID" label="ศาสนา" required></v-select>
+              <v-select :rules="[checkNull]" :items="refReligion" v-model="RELIGION_ID" label="ศาสนา"></v-select>
             </v-flex>
             <v-flex xs12>
-              <v-select :rules="[checkNull]" :items="refMovmentType" v-model="MOVEMENT_TYPE_ID" label="ประเภทการดำรงรับตำแหน่ง" required></v-select>
+              <v-select :rules="[checkNull]" :items="refMovmentType" v-model="MOVEMENT_TYPE_ID" label="ประเภทการดำรงรับตำแหน่ง"></v-select>
             </v-flex>
             <v-flex xs12>
-              <v-text-field :rules="[checkNull]" v-model="DECORATION" label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ" required></v-text-field>
+              <v-text-field v-model="DECORATION" label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="PASSPORT_STARTDATE" label="วันที่ออก Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
+              <v-text-field :rules="[checkDate]" v-model="PASSPORT_STARTDATE" label="วันที่ออก Passport" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="PASSPORT_ENDDATE" label="วันหมดอายุ Passport" mask="####-##-##" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint required return-masked-value></v-text-field>
+              <v-text-field :rules="[checkDate]" v-model="PASSPORT_ENDDATE" label="วันหมดอายุ Passport" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-select :items="[ { value: '-', text: '-'}, { value: 'Y', text: 'เล่มเดิม' },{ value: 'N', text: 'เล่มใหม่' } ]" v-model="PASSPORT_STATUS" label="สถานะ Passport" required></v-select>
+              <v-select :items="[ { value: '-', text: '-'}, { value: 'Y', text: 'เล่มเดิม' },{ value: 'N', text: 'เล่มใหม่' } ]" v-model="PASSPORT_STATUS" label="สถานะ Passport"></v-select>
             </v-flex>
           </v-layout>
         </v-container>
+        <small>* จำเป็น</small>
         </v-form>
-        <small>*จำเป็น</small>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -373,18 +375,14 @@ export default {
       this.$refs.simplert.openSimplert(obj)
     },
     save () {
-      if (!this.CITIZEN_ID) {
-        //add 
-        this.$store.dispatch('addStaff', staff)
-      } else {
-        //update
-        this.$store.dispatch('editStaff', {index: ((this.pagination.page - 1) * this.pagination.rowsPerPage) + this.idx, staff: {
+      if (this.$refs.from.validate()) {
+        const staff = {
           YEAR: this.YEAR,
           UNIV_ID: this.UNIV_ID,
           CITIZEN_ID: this.CITIZEN_ID,
           PREFIX_NAME_ID: this.PREFIX_NAME_ID,
           STF_FNAME: this.STF_FNAME,
-          STF_MNAME: this.STF_MNAME,
+          STF_MNAME: this.STF_MNAME || '-',
           STF_LNAME: this.STF_LNAME,
           GENDER_ID: this.GENDER_ID,
           BIRTHDAY: this.BIRTHDAY,
@@ -413,13 +411,20 @@ export default {
           RELIGION_ID: this.RELIGION_ID,
           MOVEMENT_TYPE_ID: this.MOVEMENT_TYPE_ID,
           MOVEMENT_DATE: this.MOVEMENT_DATE,
-          DECORATION: this.DECORATION,
+          DECORATION: this.DECORATION || '-',
           PASSPORT_STARTDATE: this.PASSPORT_STARTDATE || '-',
           PASSPORT_ENDDATE: this.PASSPORT_ENDDATE || '-',
           PASSPORT_STATUS: this.PASSPORT_STATUS
-      }})
+      }
+      if (!this.CITIZEN_ID) {
+        //add 
+        this.$store.dispatch('addStaff', staff)
+      } else {
+        //update
+        this.$store.dispatch('editStaff', {index: ((this.pagination.page - 1) * this.pagination.rowsPerPage) + this.idx, staff: staff})
       }
       this.clear()
+      }
     },
     clear () {
       this.$refs.form.reset()
@@ -436,6 +441,9 @@ export default {
     },
     checkNull (v) {
       return !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้'
+    },
+    checkDate (v) {
+      return /^2[4-5]\d\d-\d\d-\d\d$/g.test(v) || 'รูปแบบวันที่ไม่ตรงตามที่ สกอ. กำหนด'
     }
   },
   watch : {
@@ -443,16 +451,16 @@ export default {
       if (v == 2) {
         this.TEACH_ISCED_ID = '-----------'
         this.TEACH_SUBJECTGROUP_ID = '-'
-      } else {
-        this.TEACH_ISCED_ID = null
-        this.TEACH_SUBJECTGROUP_ID = null
       }
     },
     NATION_ID (v) {
       if (v == 'TH') {
         this.PASSPORT_STATUS = '-'
-      } else {
-        this.PASSPORT_STATUS = null
+      }
+    },
+    STAFFTYPE_ID (v) {
+      if (v == 1) {
+        this.TIME_CONTACT_ID = '0'
       }
     }
   }

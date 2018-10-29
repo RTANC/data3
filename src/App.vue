@@ -2,10 +2,6 @@
   <v-app>
     <v-toolbar color="grey darken-4" dark>
       <v-toolbar-title>โปรแกรมจัดการฐานข้อมูลส่ง สกอ.</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn flat>ข้อมูลกำลังพล</v-btn>
-      </v-toolbar-items>
     </v-toolbar>
     <v-content>
       <v-slide-y-transition mode="out-in">
