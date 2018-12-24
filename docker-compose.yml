@@ -3,8 +3,12 @@ version: '3.3'
 services:
   data3-app:
     build: .
-    container_name: data3
+    container_name: data3-web
     ports:
       - 8080:8080
     volumes:
       - ./src:/app/src
+    environment:
+      HOST: '0.0.0.0'
+    working_dir: /app
+    command: npm start
