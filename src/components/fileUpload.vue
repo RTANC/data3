@@ -39,7 +39,7 @@ export default {
                   STF_MNAME: '-',
                   STF_LNAME: r[6],
                   GENDER_ID: r[7],
-                  BIRTHDAY: r[8],
+                  BIRTHDAY: parseInt(r[8].substr(0,4)) - 543 + r[8].substr(4,10),
                   HOMEADD: r[9],
                   MOO: r[10],
                   STREET: r[11],
@@ -55,8 +55,8 @@ export default {
                   POSITION_ID: r[21],
                   POSITION_WORK: r[22],
                   DEPARTMENT_ID: r[23],
-                  DATE_INWORK: r[24],
-                  DATE_START_THIS_U: r[25],
+                  DATE_INWORK: parseInt(r[24].substr(0,4)) - 543 + r[24].substr(4,10),
+                  DATE_START_THIS_U: parseInt(r[25].substr(0,4)) - 543 + r[25].substr(4,10),
                   SPECIAL_NAME_ID: r[26],
                   TEACH_ISCED_ID: r[27],
                   TEACH_SUBJECTGROUP_ID: r[28],
@@ -64,14 +64,15 @@ export default {
                   INCOME_ID: r[30],
                   RELIGION_ID: r[31],
                   MOVEMENT_TYPE_ID: r[32],
-                  MOVEMENT_DATE: r[33],
+                  MOVEMENT_DATE: parseInt(r[33].substr(0,4)) - 543 + r[33].substr(4,10),
                   DECORATION: r[34],
-                  PASSPORT_STARTDATE: r[35],
-                  PASSPORT_ENDDATE: r[36],
+                  PASSPORT_STARTDATE: (r[15] !== 'TH') ? parseInt(r[35].substr(0,4)) - 543 + r[35].substr(4,10) : '-',
+                  PASSPORT_ENDDATE: (r[15] !== 'TH') ? parseInt(r[36].substr(0,4)) - 543 + r[36].substr(4,10) : '-',
                   PASSPORT_STATUS: r[37]
                 })
               })
               this.$store.dispatch('setStaffs', staffs)
+              console.log(staffs)
             } else {
               const staffGrads = []
               results.forEach(r => {
