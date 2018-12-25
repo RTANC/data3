@@ -87,7 +87,10 @@
               </v-radio-group>
             </v-flex>
             <v-flex xs12 sm6 md5>
-              <v-text-field :rules="[checkNull, checkDate]" label="วันเกิด" v-model="BIRTHDAY" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
+              <v-menu v-model="menu[0]" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                <v-text-field slot="activator" v-model="birthdayFormatted" label="วันเกิด" prepend-icon="event" readonly hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint></v-text-field>
+                <v-date-picker v-model="BIRTHDAY" @input="menu[0] = false" locale="th"></v-date-picker>              
+              </v-menu>
             </v-flex>
             <v-flex xs12 sm6 md4>
               <v-text-field :rules="[checkNull]" label="บ้านเลขที่" v-model="HOMEADD"></v-text-field>
@@ -139,10 +142,16 @@
               <v-autocomplete :rules="[checkNull]" :items="refFac" v-model="DEPARTMENT_ID" label="คณะ / หน่วยงานที่สังกัด"></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkNull, checkDate]" v-model="DATE_INWORK" label="วันบรรจุ" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
+              <v-menu v-model="menu[1]" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                <v-text-field slot="activator" v-model="dateInworkFormatted" label="วันบรรจุ" prepend-icon="event" readonly hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint></v-text-field>
+                <v-date-picker v-model="DATE_INWORK" @input="menu[1] = false" locale="th"></v-date-picker>              
+              </v-menu>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkNull, checkDate]" v-model="DATE_START_THIS_U" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
+              <v-menu v-model="menu[2]" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                <v-text-field slot="activator" v-model="startThisUFormatted" label="วันที่เข้าทำงานในสถาบันปัจจุบัน" prepend-icon="event" readonly hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint></v-text-field>
+                <v-date-picker v-model="DATE_START_THIS_U" @input="menu[2] = false" locale="th"></v-date-picker>              
+              </v-menu>
             </v-flex>
             <v-flex xs12>
               <v-autocomplete :rules="[checkNull]" :items="refISCED" v-model="SPECIAL_NAME_ID" label="สาขาวิชาที่เชี่ยวชาญ"></v-autocomplete>
@@ -162,17 +171,29 @@
             <v-flex xs12 sm6 md6>
               <v-select :rules="[checkNull]" :items="refReligion" v-model="RELIGION_ID" label="ศาสนา"></v-select>
             </v-flex>
-            <v-flex xs12>
+            <v-flex xs12 sm6 md6>
               <v-select :rules="[checkNull]" :items="refMovmentType" v-model="MOVEMENT_TYPE_ID" label="ประเภทการดำรงรับตำแหน่ง"></v-select>
+            </v-flex>
+            <v-flex xs12 sm6 md6>
+              <v-menu v-model="menu[3]" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                <v-text-field slot="activator" v-model="movementDateFormatted" label="วันที่เข้ารับตำแหน่งปัจจุบัน" prepend-icon="event" readonly hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint></v-text-field>
+                <v-date-picker v-model="MOVEMENT_DATE" @input="menu[3] = false" locale="th"></v-date-picker>              
+              </v-menu>
             </v-flex>
             <v-flex xs12>
               <v-text-field v-model="DECORATION" label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"></v-text-field>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkDate]" v-model="PASSPORT_STARTDATE" label="วันที่ออก Passport" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
+              <v-menu v-model="menu[4]" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                <v-text-field slot="activator" v-model="passportStartFormatted" label="วันที่ออก Passport" prepend-icon="event" readonly hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint></v-text-field>
+                <v-date-picker v-if="NATION_ID !== 'TH'" v-model="PASSPORT_STARTDATE" @input="menu[4] = false" locale="th"></v-date-picker>              
+              </v-menu>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field :rules="[checkDate]" v-model="PASSPORT_ENDDATE" label="วันหมดอายุ Passport" hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint return-masked-value validate-on-blur></v-text-field>
+              <v-menu v-model="menu[5]" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
+                <v-text-field slot="activator" v-model="passportEndFormatted" label="วันที่ Passport หมดอายุ" prepend-icon="event" readonly hint="รูปแบบ: YYYY-mm-dd (พ.ศ.)" persistent-hint></v-text-field>
+                <v-date-picker v-if="NATION_ID !== 'TH'" v-model="PASSPORT_ENDDATE" @input="menu[5] = false" locale="th"></v-date-picker>              
+              </v-menu>
             </v-flex>
             <v-flex xs12 sm6 md6>
               <v-select :items="[ { value: '-', text: '-'}, { value: 'Y', text: 'เล่มเดิม' },{ value: 'N', text: 'เล่มใหม่' } ]" v-model="PASSPORT_STATUS" label="สถานะ Passport"></v-select>
@@ -184,7 +205,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="red darken-1" flat @click="clear">ยกเลิก</v-btn>
+        <v-btn color="red darken-1" flat @click="dialog = false">ยกเลิก</v-btn>
         <v-btn color="blue darken-1" flat @click="save" :disabled="!valid">บันทึก</v-btn>
       </v-card-actions>
     </v-card>
@@ -313,11 +334,26 @@ export default {
       PASSPORT_STARTDATE: '-',
       PASSPORT_ENDDATE: '-',
       PASSPORT_STATUS: '-',
-      idx: null
+      idx: null,
+      menu: [false, false, false, false, false, false],
     }
   },
   methods: {
+    formatDate (date) {
+      if (!date) return '-'
+      const [year, month, day] = date.split('-')
+      return `${parseInt(year) + 543}-${month}-${day}`
+    },
     create () {
+      this.CITIZEN_ID = null
+      this.STF_MNAME = '-'
+      this.MOO = '-'
+      this.STREET = '-'
+      this.TELEPHONE = '-'
+      this.DECORATION = '-'
+      this.PASSPORT_STARTDATE = '-'
+      this.PASSPORT_ENDDATE = '-'
+      this.PASSPORT_STATUS = '-'
       this.dialog = true
     },
     update (obj) {
@@ -423,27 +459,11 @@ export default {
         //update
         this.$store.dispatch('editStaff', {index: ((this.pagination.page - 1) * this.pagination.rowsPerPage) + this.idx, staff: staff})
       }
-      this.clear()
-      }
-    },
-    clear () {
-      this.$refs.form.reset()
-      this.CITIZEN_ID = null
-      this.STF_MNAME = '-'
-      this.MOO = '-'
-      this.STREET = '-'
-      this.TELEPHONE = '-'
-      this.DECORATION = '-'
-      this.PASSPORT_STARTDATE = '-'
-      this.PASSPORT_ENDDATE = '-'
-      this.PASSPORT_STATUS = '-'
       this.dialog = false
+      }
     },
     checkNull (v) {
       return !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้'
-    },
-    checkDate (v) {
-      return /^2[4-5]\d\d-\d\d-\d\d$/g.test(v) || 'รูปแบบวันที่ไม่ตรงตามที่ สกอ. กำหนด'
     }
   },
   watch : {
@@ -462,6 +482,26 @@ export default {
       if (v == 1) {
         this.TIME_CONTACT_ID = '0'
       }
+    }
+  },
+  computed: {
+    birthdayFormatted () {
+      return this.formatDate(this.BIRTHDAY)
+    },
+    dateInworkFormatted () {
+      return this.formatDate(this.DATE_INWORK)
+    },
+    startThisUFormatted () {
+      return this.formatDate(this.DATE_START_THIS_U)
+    },
+    movementDateFormatted () {
+      return this.formatDate(this.MOVEMENT_DATE)
+    },
+    passportStartFormatted () {
+      return this.formatDate(this.PASSPORT_STARTDATE)
+    },
+    passportEndFormatted () {
+      return this.formatDate(this.PASSPORT_ENDDATE)
     }
   }
 }
