@@ -66,12 +66,18 @@ export default {
                   MOVEMENT_TYPE_ID: r[32],
                   MOVEMENT_DATE: parseInt(r[33].substr(0,4)) - 543 + r[33].substr(4,10),
                   DECORATION: r[34],
+<<<<<<< HEAD
                   PASSPORT_STARTDATE: (r[15] !== 'TH') ? parseInt(r[35].substr(0,4)) - 543 + r[35].substr(4,10) : null,
                   PASSPORT_ENDDATE: (r[15] !== 'TH') ? parseInt(r[36].substr(0,4)) - 543 + r[36].substr(4,10) : null,
+=======
+                  PASSPORT_STARTDATE: (r[15] !== 'TH') ? parseInt(r[35].substr(0,4)) - 543 + r[35].substr(4,10) : '-',
+                  PASSPORT_ENDDATE: (r[15] !== 'TH') ? parseInt(r[36].substr(0,4)) - 543 + r[36].substr(4,10) : '-',
+>>>>>>> 0cbb8f2f0331da4a0dbc442bb0757d5feda7300a
                   PASSPORT_STATUS: r[37]
                 })
               })
               this.$store.dispatch('setStaffs', staffs)
+              console.log(staffs)
             } else {
               const staffGrads = []
               results.forEach(r => {
