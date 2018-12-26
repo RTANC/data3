@@ -4,7 +4,7 @@
     <v-flex xs12>
       <v-card>
       <v-toolbar dense card class="elevation-1">
-        <v-btn color="success">บันทึก</v-btn>
+        <v-btn color="success" @click="exportToCSV">บันทึกเป็น CSV</v-btn>
         <v-spacer></v-spacer>
         <v-toolbar-title class="heading">ข้อมูลทั่วไป</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -464,6 +464,9 @@ export default {
     },
     checkNull (v) {
       return !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้'
+    },
+    exportToCSV () {
+      
     }
   },
   watch : {

@@ -72,7 +72,6 @@ export default {
                 })
               })
               this.$store.dispatch('setStaffs', staffs)
-              console.log(staffs)
             } else {
               const staffGrads = []
               results.forEach(r => {
