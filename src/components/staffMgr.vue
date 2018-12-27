@@ -240,6 +240,7 @@ import refReligion from '../json/refReligion'
 import refISCED from '../json/refISCED'
 import refFac from '../json/refFac'
 import refUniv from '../json/refUniv'
+import Papa from 'papaparse'
 
 export default {
   name: 'staffMgr',
@@ -411,7 +412,7 @@ export default {
       this.$refs.simplert.openSimplert(obj)
     },
     save () {
-      if (this.$refs.from.validate()) {
+      if (this.$refs.form.validate()) {
         const staff = {
           YEAR: this.YEAR,
           UNIV_ID: this.UNIV_ID,
@@ -466,7 +467,48 @@ export default {
       return !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้'
     },
     exportToCSV () {
-      
+      const staffs = this.$store.getters.staffs
+      staffs.forEach((r, i, arr) => {
+        arr[i].BIRTHDAY = (parseInt(r.BIRTHDAY.substr(0,4)) + 543) + r.BIRTHDAY.substr(4,10)
+        arr[i].DATE_INWORK = (parseInt(r.DATE_INWORK.substr(0,4)) + 543) + r.DATE_INWORK.substr(4,10)
+        arr[i].DATE_START_THIS_U = (parseInt(r.DATE_START_THIS_U.substr(0,4)) + 543) + r.DATE_START_THIS_U.substr(4,10)
+        arr[i].MOVEMENT_DATE = (parseInt(r.MOVEMENT_DATE.substr(0,4)) + 543) + r.MOVEMENT_DATE.substr(4,10)
+        arr[i].PASSPORT_STARTDATE = (r.NATION_ID !== 'TH') ? (parseInt(r.PASSPORT_STARTDATE.substr(0,4)) + 543) + r.PASSPORT_STARTDATE.substr(4,10) : '-'
+        arr[i].PASSPORT_ENDDATE = (r.NATION_ID !== 'TH') ? (parseInt(r.PASSPORT_ENDDATE.substr(0,4)) + 543) + r.PASSPORT_ENDDATE.substr(4,10) : '-'
+      })
+      const csv = Papa.unparse(staffs, {
+        header: false
+      })
+      const csvContent = "data:text/csv;charset=utf-8," + csv
+      const encodedUri = encodeURI(csvContent)
+      const link = document.createElement("a")
+      link.setAttribute("href", encodedUri)
+      link.setAttribute("download", "STAFF_" + this.YEAR + ".csv")
+      document.body.appendChild(link); // Required for FF
+      link.click(); // This will download the data file named "my_data.csv".
+
+      const staffGrads = this.$store.getters.staffGrads
+      staffGrads.forEach((r, i, arr) => {
+        arr[i] = {
+          CITIZEN_ID: r.CITIZEN_ID,
+          GRAD_LEV_ID: r.GRAD_LEV_ID,
+          GRAD_CURR: r.GRAD_CURR,
+          GRAD_ISCED_ID: r.GRAD_ISCED_ID,
+          GRAD_PROG: r.GRAD_PROG,
+          GRAD_UNIV: r.GRAD_UNIV,
+          GRAD_COUNTRY_ID: r.GRAD_COUNTRY_ID
+        }
+      })
+      const staffGradCsv = Papa.unparse(staffGrads, {
+        header: false
+      })
+      const staffGradCsvContent = "data:text/csv;charset=utf-8," + staffGradCsv
+      const encodedUri2 = encodeURI(staffGradCsvContent)
+      const link2 = document.createElement("a")
+      link2.setAttribute("href", encodedUri2)
+      link2.setAttribute("download", "STAFF_GRAD_" + this.YEAR + ".csv")
+      document.body.appendChild(link2); // Required for FF
+      link2.click(); // This will download the data file named "my_data.csv".
     }
   },
   watch : {
