@@ -449,8 +449,8 @@ export default {
           MOVEMENT_TYPE_ID: this.MOVEMENT_TYPE_ID,
           MOVEMENT_DATE: this.MOVEMENT_DATE,
           DECORATION: this.DECORATION || '-',
-          PASSPORT_STARTDATE: this.PASSPORT_STARTDATE || '-',
-          PASSPORT_ENDDATE: this.PASSPORT_ENDDATE || '-',
+          PASSPORT_STARTDATE: this.PASSPORT_STARTDATE || null,
+          PASSPORT_ENDDATE: this.PASSPORT_ENDDATE || null,
           PASSPORT_STATUS: this.PASSPORT_STATUS
       }
       if (!this.CITIZEN_ID) {
@@ -467,14 +467,48 @@ export default {
       return !!v || 'ท่านจำเป็นต้องกรอกข้อมูลนี้'
     },
     exportToCSV () {
-      const staffs = this.$store.getters.staffs
-      staffs.forEach((r, i, arr) => {
-        arr[i].BIRTHDAY = (parseInt(r.BIRTHDAY.substr(0,4)) + 543) + r.BIRTHDAY.substr(4,10)
-        arr[i].DATE_INWORK = (parseInt(r.DATE_INWORK.substr(0,4)) + 543) + r.DATE_INWORK.substr(4,10)
-        arr[i].DATE_START_THIS_U = (parseInt(r.DATE_START_THIS_U.substr(0,4)) + 543) + r.DATE_START_THIS_U.substr(4,10)
-        arr[i].MOVEMENT_DATE = (parseInt(r.MOVEMENT_DATE.substr(0,4)) + 543) + r.MOVEMENT_DATE.substr(4,10)
-        arr[i].PASSPORT_STARTDATE = (r.NATION_ID !== 'TH') ? (parseInt(r.PASSPORT_STARTDATE.substr(0,4)) + 543) + r.PASSPORT_STARTDATE.substr(4,10) : '-'
-        arr[i].PASSPORT_ENDDATE = (r.NATION_ID !== 'TH') ? (parseInt(r.PASSPORT_ENDDATE.substr(0,4)) + 543) + r.PASSPORT_ENDDATE.substr(4,10) : '-'
+      const staffs = []
+      this.$store.getters.staffs.forEach((r) => {
+        staffs.push({
+          YEAR: r.YEAR,
+          UNIV_ID: r.UNIV_ID,
+          CITIZEN_ID: r.CITIZEN_ID,
+          PREFIX_NAME_ID: r.PREFIX_NAME_ID,
+          STF_FNAME: r.STF_FNAME,
+          STF_MNAME: r.STF_MNAME || '-',
+          STF_LNAME: r.STF_LNAME,
+          GENDER_ID: r.GENDER_ID,
+          BIRTHDAY: (parseInt(r.BIRTHDAY.substr(0,4)) + 543) + r.BIRTHDAY.substr(4,10),
+          HOMEADD: r.HOMEADD,
+          MOO: r.MOO,
+          STREET: r.STREET,
+          SUB_DISTRICT_ID: r.SUB_DISTRICT_ID,
+          TELEPHONE: r.TELEPHONE,
+          ZIPCODE: r.ZIPCODE,
+          NATION_ID: r.NATION_ID,
+          STAFFTYPE_ID: r.STAFFTYPE_ID,
+          TIME_CONTACT_ID: r.TIME_CONTACT_ID,
+          BUDGET_ID: r.BUDGET_ID,
+          SUBSTAFFTYPE_ID: r.SUBSTAFFTYPE_ID,
+          ADMIN_POSITION_ID: r.ADMIN_POSITION_ID,
+          POSITION_ID: r.POSITION_ID,
+          POSITION_WORK: r.POSITION_WORK,
+          DEPARTMENT_ID: r.DEPARTMENT_ID,
+          DATE_INWORK: (parseInt(r.DATE_INWORK.substr(0,4)) + 543) + r.DATE_INWORK.substr(4,10),
+          DATE_START_THIS_U: (parseInt(r.DATE_START_THIS_U.substr(0,4)) + 543) + r.DATE_START_THIS_U.substr(4,10),
+          SPECIAL_NAME_ID: r.SPECIAL_NAME_ID,
+          TEACH_ISCED_ID: r.TEACH_ISCED_ID,
+          TEACH_SUBJECTGROUP_ID: r.TEACH_SUBJECTGROUP_ID,
+          DEFROM_ID: r.DEFROM_ID,
+          INCOME_ID: r.INCOME_ID,
+          RELIGION_ID: r.RELIGION_ID,
+          MOVEMENT_TYPE_ID: r.MOVEMENT_TYPE_ID,
+          MOVEMENT_DATE: (parseInt(r.MOVEMENT_DATE.substr(0,4)) + 543) + r.MOVEMENT_DATE.substr(4,10),
+          DECORATION: r.DECORATION || '-',
+          PASSPORT_STARTDATE: (r.NATION_ID !== 'TH') ? (parseInt(r.PASSPORT_STARTDATE.substr(0,4)) + 543) + r.PASSPORT_STARTDATE.substr(4,10) : '-',
+          PASSPORT_ENDDATE: (r.NATION_ID !== 'TH') ? (parseInt(r.PASSPORT_ENDDATE.substr(0,4)) + 543) + r.PASSPORT_ENDDATE.substr(4,10) : '-',
+          PASSPORT_STATUS: r.PASSPORT_STATUS
+      })
       })
       const csv = Papa.unparse(staffs, {
         header: false
