@@ -21,7 +21,7 @@ export const store = new Vuex.Store({
             state.staffGrads = staffGrads
         },
         addStaff: (state, staff) => {
-            state.push(staff)
+            state.staffs.push(staff)
         },
         editStaff: (state, payload) => {
             state.staffs[payload.index].CITIZEN_ID = payload.staff.CITIZEN_ID

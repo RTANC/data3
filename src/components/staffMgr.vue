@@ -205,7 +205,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="red darken-1" flat @click="dialog = false">ยกเลิก</v-btn>
+        <v-btn color="red darken-1" flat @click="close">ยกเลิก</v-btn>
         <v-btn color="blue darken-1" flat @click="save" :disabled="!valid">บันทึก</v-btn>
       </v-card-actions>
     </v-card>
@@ -337,6 +337,7 @@ export default {
       PASSPORT_STATUS: '-',
       idx: null,
       menu: [false, false, false, false, false, false],
+      IsNew: null
     }
   },
   methods: {
@@ -352,9 +353,10 @@ export default {
       this.STREET = '-'
       this.TELEPHONE = '-'
       this.DECORATION = '-'
-      this.PASSPORT_STARTDATE = '-'
-      this.PASSPORT_ENDDATE = '-'
+      this.PASSPORT_STARTDATE = null
+      this.PASSPORT_ENDDATE = null
       this.PASSPORT_STATUS = '-'
+      this.IsNew = true
       this.dialog = true
     },
     update (obj) {
@@ -394,6 +396,7 @@ export default {
       this.PASSPORT_STARTDATE = obj.PASSPORT_STARTDATE
       this.PASSPORT_ENDDATE = obj.PASSPORT_ENDDATE
       this.PASSPORT_STATUS = obj.PASSPORT_STATUS
+      this.IsNew = false
       this.dialog = true
     },
     remove (index, key) {
@@ -453,13 +456,14 @@ export default {
           PASSPORT_ENDDATE: this.PASSPORT_ENDDATE || null,
           PASSPORT_STATUS: this.PASSPORT_STATUS
       }
-      if (!this.CITIZEN_ID) {
+      if (this.IsNew) {
         //add 
         this.$store.dispatch('addStaff', staff)
       } else {
         //update
         this.$store.dispatch('editStaff', {index: ((this.pagination.page - 1) * this.pagination.rowsPerPage) + this.idx, staff: staff})
       }
+      this.$refs.form.reset()
       this.dialog = false
       }
     },
@@ -543,6 +547,10 @@ export default {
       link2.setAttribute("download", "STAFF_GRAD_" + this.YEAR + ".csv")
       document.body.appendChild(link2); // Required for FF
       link2.click(); // This will download the data file named "my_data.csv".
+    },
+    close () {
+      this.$refs.form.reset()
+      this.dialog = false
     }
   },
   watch : {
