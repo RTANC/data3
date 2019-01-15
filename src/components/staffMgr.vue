@@ -53,7 +53,7 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn block color="primary" @click="dialogStartup = false;"  :disabled="(($store.getters.staffs.length == 0 || $store.getters.staffGrads.length == 0) ? true : false)">ตกลง</v-btn>
+            <v-btn block color="primary" @click="dialogStartup = false;"  :disabled="(($store.getters.staffs.length == 0 || $store.getters.staffGrads.length == 0 || YEAR == null) ? true : false)">ตกลง</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
